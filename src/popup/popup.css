@@ -1,0 +1,53 @@
+:root {
+  color-scheme: light dark;
+  font: 14px/1.45 system-ui, sans-serif;
+}
+
+body {
+  box-sizing: border-box;
+  margin: 0;
+  min-width: 320px;
+}
+
+main {
+  padding: 16px;
+}
+
+h1 {
+  font-size: 18px;
+  margin: 0 0 8px;
+}
+
+button {
+  background: #6b351d;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 9px 12px;
+  width: 100%;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+button:focus-visible {
+  outline: 3px solid #1677ff;
+  outline-offset: 2px;
+}
+
+#status {
+  min-height: 2.8em;
+}
+
+.privacy {
+  border-top: 1px solid currentColor;
+  font-size: 12px;
+  margin: 12px 0 0;
+  opacity: 0.8;
+  padding-top: 10px;
+}

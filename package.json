@@ -1,0 +1,26 @@
+{
+  "name": "whiskey-empire-west",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.test.json --noEmit",
+    "test:compile": "rm -rf build-tests && tsc -p tsconfig.test.json",
+    "test:harness": "node --test tests/e2e/support/*.test.mjs",
+    "test": "npm run test:compile && node --test build-tests/tests/unit/*.test.js build-tests/tests/dom/*.test.js && npm run test:harness",
+    "e2e:install": "playwright install chromium",
+    "test:e2e:live": "npm run build && node tests/e2e/live-extension.mjs",
+    "validate": "npm run typecheck && npm test && npm run build"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.326",
+    "@types/jsdom": "^21.1.7",
+    "@types/node": "^22.15.0",
+    "ajv": "^8.17.1",
+    "esbuild": "^0.25.5",
+    "jsdom": "^26.1.0",
+    "playwright": "^1.61.0",
+    "typescript": "^5.8.3"
+  }
+}

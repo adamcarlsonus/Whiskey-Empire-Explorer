@@ -1,0 +1,16 @@
+node_modules/
+dist/
+build/
+build-tests/
+coverage/
+*.log
+.env*
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.vscode/
+.idea/
+tests/fixtures/live-*.html
+test-results/live-extension/*
+!test-results/live-extension/.gitignore

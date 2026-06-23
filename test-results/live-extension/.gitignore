@@ -1,0 +1,3 @@
+# Live E2E reports are local diagnostics. Keep only this retention marker.
+*
+!.gitignore
