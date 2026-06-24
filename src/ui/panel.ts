@@ -20,8 +20,9 @@ export interface PanelView {
   warning: HTMLElement;
   controls: HTMLElement;
   query: HTMLInputElement;
+  distilleryField: HTMLElement;
   distillery: HTMLInputElement;
-  distilleryOptions: HTMLDataListElement;
+  distilleryList: HTMLElement;
   sort: HTMLSelectElement;
   sortField: HTMLElement;
   sortButton: HTMLButtonElement;
@@ -64,7 +65,10 @@ export function createPanel(before: Element, actions: PanelActions): PanelView {
       <p id="wew-warning" class="warning" hidden></p>
       <div id="wew-controls" class="controls" hidden>
         <label>Search all visible text<input id="wew-query" type="search" autocomplete="off"></label>
-        <label id="wew-distillery-label" hidden>Distillery<input id="wew-distillery" type="search" list="wew-distillery-options" autocomplete="off" placeholder="All distilleries"><datalist id="wew-distillery-options"></datalist></label>
+        <div class="distillery-field" id="wew-distillery-field" hidden><label class="field-label" id="wew-distillery-label" for="wew-distillery">Distillery</label>
+          <div class="combobox-shell"><input class="distillery-control" id="wew-distillery" type="search" autocomplete="off" placeholder="All distilleries" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-expanded="false" aria-controls="wew-distillery-list" aria-labelledby="wew-distillery-label"><span class="chevron" aria-hidden="true"></span></div>
+          <div class="sort-list distillery-list" id="wew-distillery-list" role="listbox" aria-labelledby="wew-distillery-label" hidden></div>
+        </div>
         <div class="sort-field" id="wew-sort-field"><span class="field-label" id="wew-sort-label">Sort</span>
           <button class="sort-trigger" id="wew-sort-button" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="wew-sort-list" aria-labelledby="wew-sort-label wew-sort-value"><span id="wew-sort-value">Original order</span><span class="chevron" aria-hidden="true"></span></button>
           <div class="sort-list" id="wew-sort-list" role="listbox" aria-labelledby="wew-sort-label" hidden>
@@ -90,7 +94,8 @@ export function createPanel(before: Element, actions: PanelActions): PanelView {
   const view: PanelView = {
     host, shadow,
     heading: required("#wew-heading"), status: required("#wew-status"), warning: required("#wew-warning"),
-    controls: required("#wew-controls"), query: required("#wew-query"), distillery: required("#wew-distillery"), distilleryOptions: required("#wew-distillery-options"),
+    controls: required("#wew-controls"), query: required("#wew-query"), distilleryField: required("#wew-distillery-field"),
+    distillery: required("#wew-distillery"), distilleryList: required("#wew-distillery-list"),
     sort: required("#wew-sort"), sortField: required("#wew-sort-field"), sortButton: required("#wew-sort-button"),
     sortValue: required("#wew-sort-value"), sortList: required("#wew-sort-list"),
     reset: required("#wew-reset"), cancel: required("#wew-cancel"),
@@ -99,6 +104,33 @@ export function createPanel(before: Element, actions: PanelActions): PanelView {
   };
   required<HTMLAnchorElement>("#wew-original").href = window.location.href;
   const emitCriteria = () => actions.onCriteria({ query: view.query.value, distillery: view.distillery.value || null, sort: view.sort.value as SortOrder });
+  const distilleryOptions = () => [...view.distilleryList.querySelectorAll<HTMLButtonElement>(".distillery-option")];
+  const filteredDistilleryOptions = () => {
+    const query = view.distillery.value.trim().toLocaleLowerCase("en-US");
+    const options = distilleryOptions();
+    for (const option of options) {
+      const value = option.dataset.value ?? "";
+      option.hidden = Boolean(query && !value.toLocaleLowerCase("en-US").includes(query));
+      option.setAttribute("aria-selected", String(Boolean(query) && value.toLocaleLowerCase("en-US") === query));
+    }
+    return options.filter((option) => !option.hidden);
+  };
+  const closeDistilleries = (restoreFocus = false) => {
+    view.distilleryList.hidden = true;
+    view.distillery.setAttribute("aria-expanded", "false");
+    if (restoreFocus) view.distillery.focus();
+  };
+  const openDistilleries = () => {
+    if (!filteredDistilleryOptions().length) return closeDistilleries();
+    view.distilleryList.hidden = false;
+    view.distillery.setAttribute("aria-expanded", "true");
+  };
+  const chooseDistillery = (option: HTMLButtonElement) => {
+    view.distillery.value = option.dataset.value ?? "";
+    closeDistilleries();
+    emitCriteria();
+    view.distillery.focus();
+  };
   const sortOptions = () => [...view.sortList.querySelectorAll<HTMLButtonElement>(".sort-option")];
   const syncSort = () => {
     const selected = sortOptions().find((option) => option.dataset.value === view.sort.value) ?? sortOptions()[0];
@@ -123,7 +155,40 @@ export function createPanel(before: Element, actions: PanelActions): PanelView {
     emitCriteria();
   };
   view.query.addEventListener("input", emitCriteria);
-  view.distillery.addEventListener("input", emitCriteria);
+  view.distillery.addEventListener("input", () => { emitCriteria(); openDistilleries(); });
+  view.distillery.addEventListener("focus", openDistilleries);
+  view.distillery.addEventListener("click", openDistilleries);
+  view.distillery.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault();
+      openDistilleries();
+      const options = filteredDistilleryOptions();
+      options[event.key === "ArrowDown" ? 0 : options.length - 1]?.focus();
+    } else if (event.key === "Escape") closeDistilleries();
+  });
+  view.distilleryList.addEventListener("click", (event) => {
+    const option = event.target instanceof Element ? event.target.closest<HTMLButtonElement>(".distillery-option") : null;
+    if (option) chooseDistillery(option);
+  });
+  view.distilleryList.addEventListener("keydown", (event) => {
+    const option = event.target instanceof Element ? event.target.closest<HTMLButtonElement>(".distillery-option") : null;
+    if (!option) return;
+    const options = filteredDistilleryOptions();
+    const index = options.indexOf(option);
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault();
+      options[(index + (event.key === "ArrowDown" ? 1 : -1) + options.length) % options.length]?.focus();
+    } else if (event.key === "Home" || event.key === "End") {
+      event.preventDefault();
+      options[event.key === "Home" ? 0 : options.length - 1]?.focus();
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      closeDistilleries(true);
+    }
+  });
+  view.distilleryField.addEventListener("focusout", () => setTimeout(() => {
+    if (!view.distilleryField.contains(view.shadow.activeElement)) closeDistilleries();
+  }, 0));
   view.sort.addEventListener("change", () => { syncSort(); emitCriteria(); });
   view.sortButton.addEventListener("click", () => view.sortList.hidden ? openSort() : closeSort());
   view.sortButton.addEventListener("keydown", (event) => {

@@ -23,7 +23,11 @@ input, select { background: var(--wew-surface); border: 1px solid var(--wew-bord
 input::placeholder { color: var(--wew-muted); opacity: 1; }
 input:hover, select:hover { background: var(--wew-surface-hover); }
 select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--wew-muted) 50%), linear-gradient(135deg, var(--wew-muted) 50%, transparent 50%); background-position: calc(100% - 15px) 50%, calc(100% - 10px) 50%; background-repeat: no-repeat; background-size: 5px 5px, 5px 5px; cursor: pointer; padding-right: 2.35rem; }
-.sort-field { display: grid; gap: .35rem; min-width: 12rem; position: relative; }
+.sort-field, .distillery-field { display: grid; gap: .35rem; min-width: 12rem; position: relative; }
+.combobox-shell { align-items: center; display: flex; position: relative; }
+.distillery-control { padding-right: 2.5rem; width: 100%; }
+.combobox-shell .chevron { pointer-events: none; position: absolute; right: .9rem; }
+.distillery-control[aria-expanded="true"] + .chevron { transform: rotate(225deg) translate(-.1rem, -.1rem); }
 .sort-trigger { align-items: center; background: var(--wew-surface); border: 1px solid var(--wew-border); border-radius: 10px; box-shadow: none; color: var(--wew-text); display: flex; font-weight: 500; justify-content: space-between; min-width: 12rem; padding: .55rem .8rem; text-align: left; }
 .sort-trigger:hover, .sort-trigger[aria-expanded="true"] { background: var(--wew-surface-hover); }
 .chevron { border-bottom: 2px solid currentColor; border-right: 2px solid currentColor; height: .5rem; margin-left: 1rem; transform: rotate(45deg) translateY(-.15rem); transition: transform .15s ease; width: .5rem; }

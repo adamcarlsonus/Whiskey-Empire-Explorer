@@ -15,11 +15,18 @@ test("shows distillery control only when producers exist", async () => {
     const { entries } = normalizeRecords([{ rawName: "A", rawPrice: "$9", rawDistillery: "anCnoc", allVisibleText: "A anCnoc", sourcePageUrl: dom.window.location.href, sourceRowIndex: 0 }]);
     const session: CollectionSession = { sessionId: "x", status: "ready", pages: [], entries, skippedCandidates: 0, startedAt: 0, completedAt: 1, warning: null, error: null };
     updatePanel(panel, session, { query: "", distillery: null, sort: "source" });
-    assert.equal(panel.distillery.closest("label")?.hidden, false);
+    assert.equal(panel.distilleryField.hidden, false);
     assert.equal(panel.distillery.type, "search");
-    assert.equal(panel.distillery.getAttribute("list"), "wew-distillery-options");
-    assert.deepEqual([...panel.distilleryOptions.options].map((option) => option.value), ["anCnoc"]);
+    assert.equal(panel.distillery.getAttribute("role"), "combobox");
+    assert.equal(panel.distillery.getAttribute("aria-controls"), "wew-distillery-list");
+    assert.deepEqual([...panel.distilleryList.querySelectorAll<HTMLButtonElement>(".distillery-option")].map((option) => option.dataset.value), ["anCnoc"]);
+    panel.distillery.focus();
+    assert.equal(panel.distilleryList.hidden, false);
+    assert.equal(panel.distillery.getAttribute("aria-expanded"), "true");
+    panel.distilleryList.querySelector<HTMLButtonElement>(".distillery-option")?.click();
+    assert.equal(panel.distillery.value, "anCnoc");
+    assert.equal(panel.distilleryList.hidden, true);
     updatePanel(panel, { ...session, entries: [] }, { query: "", distillery: null, sort: "source" });
-    assert.equal(panel.distillery.closest("label")?.hidden, true);
+    assert.equal(panel.distilleryField.hidden, true);
   } finally { restore(); }
 });

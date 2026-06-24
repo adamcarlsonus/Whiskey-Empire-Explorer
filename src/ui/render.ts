@@ -84,10 +84,24 @@ export function updatePanel(view: PanelView, session: Readonly<CollectionSession
   const distilleries = [...new Map(session.entries.filter((entry) => entry.distillery).map((entry) => [entry.distillery!.toLocaleLowerCase("en-US"), entry.distillery!])).entries()]
     .sort((a, b) => a[1].localeCompare(b[1], "en-US"));
   const currentDistillery = view.distillery.value;
-  view.distilleryOptions.replaceChildren(...distilleries.map(([, label]) => new Option(label, label)));
+  const distilleryOptions = distilleries.map(([, label], index) => {
+    const option = document.createElement("button");
+    option.type = "button";
+    option.className = "sort-option distillery-option";
+    option.id = `wew-distillery-option-${index}`;
+    option.dataset.value = label;
+    option.setAttribute("role", "option");
+    option.setAttribute("aria-selected", String(label.toLocaleLowerCase("en-US") === currentDistillery.toLocaleLowerCase("en-US")));
+    option.textContent = label;
+    return option;
+  });
+  view.distilleryList.replaceChildren(...distilleryOptions);
   view.distillery.value = currentDistillery;
-  const distilleryLabel = view.shadow.querySelector<HTMLElement>("#wew-distillery-label");
-  if (distilleryLabel) distilleryLabel.hidden = distilleries.length === 0;
+  view.distilleryField.hidden = distilleries.length === 0;
+  if (!distilleries.length) {
+    view.distilleryList.hidden = true;
+    view.distillery.setAttribute("aria-expanded", "false");
+  }
 
   const result = selectEntries(session.entries, criteria);
   const fragment = document.createDocumentFragment();
