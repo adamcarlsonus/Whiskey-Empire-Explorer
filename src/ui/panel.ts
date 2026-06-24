@@ -83,7 +83,7 @@ export function createPanel(before: Element, actions: PanelActions): PanelView {
       </div>
       <div class="actions"><button id="wew-cancel" type="button">Cancel scan</button><button id="wew-retry" type="button" hidden>Retry</button><button id="wew-continue" type="button" hidden>Continue with partial results</button></div>
       <p id="wew-count" aria-live="polite"></p>
-      <div class="results-wrap"><table class="menu-list" hidden id="wew-table"><thead><tr><th id="wew-name-head" scope="col">Name</th><th scope="col">Proof</th><th scope="col">Distillery</th><th scope="col">Notes</th><th id="wew-price-head" scope="col">Price</th></tr></thead><tbody id="wew-body"></tbody></table></div>
+      <div class="results-wrap"><table class="menu-list" hidden id="wew-table"><thead><tr><th id="wew-name-head" scope="col">Name</th><th scope="col">Proof</th><th scope="col">Distillery</th><th scope="col">Notes</th><th scope="col">Search</th><th id="wew-price-head" scope="col">Price</th></tr></thead><tbody id="wew-body"></tbody></table></div>
     </section>`;
 
   const required = <T extends Element>(selector: string): T => {

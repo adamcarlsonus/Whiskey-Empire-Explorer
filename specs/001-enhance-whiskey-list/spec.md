@@ -228,7 +228,8 @@ back to the original page.
   MUST visibly identify all active criteria and provide a one-step reset.
 - **FR-014**: The enhanced view MUST preserve a visible link to the canonical restaurant list and
   MUST appear as an inline panel above the original Whiskey Empire list, which MUST remain intact
-  and reachable below the panel.
+  and reachable below the panel. Each result MUST also offer an explicit Google Search link using
+  only its displayed name and type, opening in a new tab with opener and referrer isolation.
 - **FR-015**: If the page is unsupported, collection is incomplete, or no reliable entries can be
   extracted, the product MUST show a clear error or warning with an appropriate retry, partial-results,
   or return-to-original action. Wrong URL and inactive tab offer guidance and Close; unsupported
@@ -248,7 +249,9 @@ back to the original page.
   to analytics, logging, crash reporting, advertising, or any other external data service. Permitted
   pagination requests contain only the URL and headers Chrome would normally send; cross-origin
   source-provider requests omit credentials. The extension MUST NOT add collected content, queries, criteria,
-  interaction events, session IDs, or identifiers.
+  interaction events, session IDs, or identifiers. The sole user-initiated exception is clicking a
+  visible Google Search link, which deliberately navigates a new tab with that product's name/type query;
+  the extension makes no search request until the visitor clicks and sends no other session data.
 - **FR-020**: Collected data MUST exist only for the active enhanced view and MUST be discarded when
   that page or view ends; no account, server storage, browsing-history store, or cross-site profile
   may be created. No local, session, synchronized, IndexedDB, cache, or file persistence is permitted

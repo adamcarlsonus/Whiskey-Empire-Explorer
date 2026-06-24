@@ -12,7 +12,7 @@ test("injects one panel above source and renders safe searchable results", async
   const restore = installDomGlobals(dom);
   try {
     const root = dom.window.document.querySelector("[data-whiskey-empire-list]")!;
-    const normalized = normalizeRecords([{ rawName: "<b>Safe Name</b>", rawPrice: "$9", rawDistillery: "anCnoc", rawProof: "46% ABV", allVisibleText: "Safe Name anCnoc 46% ABV Kentucky", sourcePageUrl: dom.window.location.href, sourceRowIndex: 0 }]);
+    const normalized = normalizeRecords([{ rawName: "<b>Safe Name</b> #BOU Bourbon", rawPrice: "$9", rawDistillery: "anCnoc", rawType: "#BOU Bourbon", rawProof: "46% ABV", allVisibleText: "Safe Name #BOU Bourbon anCnoc 46% ABV Kentucky", sourcePageUrl: dom.window.location.href, sourceRowIndex: 0 }]);
     const panel = createPanel(root, { onCriteria() {}, onReset() {}, onCancel() {}, onRetry() {}, onContinue() {}, onClose() {} });
     const session: CollectionSession = { sessionId: "test", status: "ready", pages: [], entries: normalized.entries, skippedCandidates: 0, startedAt: 0, completedAt: 1, warning: null, error: null };
     updatePanel(panel, session, { query: "safe", distillery: null, sort: "source" });
@@ -20,10 +20,15 @@ test("injects one panel above source and renders safe searchable results", async
     assert.equal(panel.host.nextElementSibling, root);
     assert.equal(panel.body.textContent?.includes("<b>Safe Name</b>"), true);
     assert.equal(panel.body.querySelector("b"), null);
-    assert.deepEqual([...panel.shadow.querySelectorAll("th")].map((cell) => cell.textContent), ["Name", "Proof", "Distillery", "Notes", "Price"]);
-    assert.equal(panel.body.querySelector('[data-label="Name"]')?.textContent, "<b>Safe Name</b>");
+    assert.deepEqual([...panel.shadow.querySelectorAll("th")].map((cell) => cell.textContent), ["Name", "Proof", "Distillery", "Notes", "Search", "Price"]);
+    assert.equal(panel.body.querySelector('[data-label="Name"]')?.textContent, "<b>Safe Name</b> Bourbon");
     assert.equal(panel.body.querySelector('[data-label="Proof"]')?.textContent, "46% ABV");
     assert.equal(panel.body.querySelector('[data-label="Distillery"]')?.textContent, "anCnoc");
+    const googleLink = panel.body.querySelector<HTMLAnchorElement>(".product-search")!;
+    assert.equal(googleLink.textContent, "Google Search");
+    assert.equal(new URL(googleLink.href).searchParams.get("q"), "<b>Safe Name</b> Bourbon");
+    assert.equal(googleLink.target, "_blank");
+    assert.equal(googleLink.rel, "noopener noreferrer");
     assert.equal(panel.body.querySelector(".price-value")?.textContent, "$9");
     assert.equal(isExtensionRequest({ type: "START_SCAN" }), true);
   } finally { restore(); }

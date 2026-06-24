@@ -26,6 +26,10 @@ test("shows distillery control only when producers exist", async () => {
     panel.distilleryList.querySelector<HTMLButtonElement>(".distillery-option")?.click();
     assert.equal(panel.distillery.value, "anCnoc");
     assert.equal(panel.distilleryList.hidden, true);
+    panel.distillery.value = "";
+    updatePanel(panel, session, { query: "", distillery: "anCnoc", sort: "source" });
+    assert.equal(panel.distillery.value, "anCnoc");
+    assert.equal(panel.distilleryList.querySelector('[data-value="anCnoc"]')?.getAttribute("aria-selected"), "true");
     updatePanel(panel, { ...session, entries: [] }, { query: "", distillery: null, sort: "source" });
     assert.equal(panel.distilleryField.hidden, true);
   } finally { restore(); }

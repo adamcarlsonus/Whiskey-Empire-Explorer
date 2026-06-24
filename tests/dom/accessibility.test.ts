@@ -22,5 +22,6 @@ test("panel controls have native semantics, names, focus, live status, and reduc
     assert.match(panel.shadow.querySelector("style")?.textContent ?? "", /prefers-reduced-motion/);
     assert.match(panel.shadow.querySelector("style")?.textContent ?? "", /max-width: 700px/);
     assert.match(panel.shadow.querySelector("style")?.textContent ?? "", /appearance: none/);
+    assert.match(panel.shadow.querySelector("style")?.textContent ?? "", /h2:focus-visible\s*\{\s*outline:\s*none/);
   } finally { restore(); }
 });

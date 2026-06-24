@@ -49,6 +49,7 @@ button:hover { background: #d9d9d9; border-color: #d9d9d9; }
 .nav-action:hover { background: var(--wew-surface); border-color: transparent; color: var(--wew-text); }
 .nav-action svg { fill: none; flex: 0 0 auto; height: 1.4rem; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; width: 1.4rem; }
 :focus-visible { outline: 3px solid var(--wew-focus); outline-offset: 2px; }
+h2:focus-visible { outline: none; }
 .status { color: var(--wew-muted); margin: .85rem 0; }
 .warning, .error { background: #2b2118; border-left: 4px solid #f2a33c; border-radius: 6px; font-weight: 600; padding: .6rem .8rem; }
 .error { background: #2d1719; border-color: #ff6b72; }
@@ -56,14 +57,18 @@ button:hover { background: #d9d9d9; border-color: #d9d9d9; }
 table { border-collapse: collapse; width: 100%; }
 .menu-list thead { clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px; }
 .menu-list tbody { display: block; }
-.menu-list tr { border-bottom: 1px solid var(--wew-border); display: grid; gap: .25rem .7rem; grid-template-columns: auto auto 1fr; padding: 1.2rem .25rem; }
+.menu-list tr { border-bottom: 1px solid var(--wew-border); display: grid; gap: .25rem .7rem; grid-template-columns: auto 1fr auto; padding: 1.2rem .25rem; }
 .menu-list td { border: 0; padding: 0; text-align: left; vertical-align: top; }
-.menu-list td[data-label="Name"] { font-size: 1.08rem; font-weight: 750; grid-column: 1 / -1; letter-spacing: .015em; text-transform: uppercase; }
+.menu-list td[data-label="Name"] { font-size: 1.08rem; font-weight: 750; grid-column: 1 / 3; grid-row: 1; letter-spacing: .015em; min-width: 0; text-transform: uppercase; }
 .item-type { color: var(--wew-muted); font-style: italic; font-weight: 450; }
-.menu-list td[data-label="Distillery"], .menu-list td[data-label="Proof"] { color: var(--wew-muted); }
+.menu-list td[data-label="Distillery"], .menu-list td[data-label="Proof"] { color: var(--wew-muted); grid-row: 2; }
 .menu-list td[data-label="Distillery"]::before { content: "• "; margin-right: .35rem; }
-.menu-list td[data-label="Notes"] { color: var(--wew-muted); grid-column: 1 / -1; }
-.menu-list td[data-label="Price"] { align-items: center; display: grid; font-weight: 650; gap: .55rem; grid-column: 1 / -1; grid-template-columns: auto 1fr auto; margin-top: .6rem; }
+.menu-list td[data-label="Notes"] { color: var(--wew-muted); grid-column: 1 / -1; grid-row: 3; }
+.menu-list td[data-label="Search"] { align-self: start; grid-column: 3; grid-row: 1; justify-self: end; }
+.product-search { align-items: center; border-radius: 9px; color: var(--wew-text); display: inline-flex; font-weight: 500; gap: .55rem; padding: .35rem .5rem; text-decoration: none; }
+.product-search:hover { background: var(--wew-surface); }
+.product-search svg { fill: none; height: 1.2rem; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; width: 1.2rem; }
+.menu-list td[data-label="Price"] { align-items: center; display: grid; font-weight: 650; gap: .55rem; grid-column: 1 / -1; grid-row: 4; grid-template-columns: auto 1fr auto; margin-top: .6rem; }
 .price-leader { border-bottom: 2px dotted var(--wew-border); min-width: 2rem; }
 .price-value { white-space: nowrap; }
 th button { background: transparent; border-color: transparent; color: var(--wew-text); padding: .25rem; }
@@ -71,6 +76,8 @@ th button { background: transparent; border-color: transparent; color: var(--wew
 [hidden] { display: none !important; }
 @media (max-width: 700px) {
   .menu-list tr { grid-template-columns: auto 1fr; }
+  .menu-list td[data-label="Name"] { grid-column: 1; }
+  .menu-list td[data-label="Search"] { grid-column: 2; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }

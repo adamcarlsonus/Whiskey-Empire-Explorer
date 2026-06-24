@@ -41,6 +41,33 @@ function priceCell(row: HTMLTableRowElement, entry: WhiskeyEntry): void {
   row.append(td);
 }
 
+function searchCell(row: HTMLTableRowElement, entry: WhiskeyEntry): void {
+  const query = [entry.name, entry.type].filter(Boolean).join(" ");
+  const td = document.createElement("td");
+  td.dataset.label = "Search";
+  const link = document.createElement("a");
+  link.className = "product-search";
+  link.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.setAttribute("aria-label", `Google Search for ${query}`);
+  const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  icon.setAttribute("viewBox", "0 0 24 24");
+  icon.setAttribute("aria-hidden", "true");
+  const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  circle.setAttribute("cx", "11");
+  circle.setAttribute("cy", "11");
+  circle.setAttribute("r", "7");
+  const handle = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  handle.setAttribute("d", "m16 16 5 5");
+  const label = document.createElement("span");
+  label.textContent = "Google Search";
+  icon.append(circle, handle);
+  link.append(icon, label);
+  td.append(link);
+  row.append(td);
+}
+
 function rowFor(entry: WhiskeyEntry): HTMLTableRowElement {
   const row = document.createElement("tr");
   row.dataset.entryId = entry.id;
@@ -48,6 +75,7 @@ function rowFor(entry: WhiskeyEntry): HTMLTableRowElement {
   cell(row, "Proof", entry.proof ?? "—");
   cell(row, "Distillery", entry.distillery ?? "—");
   cell(row, "Notes", entry.notes ?? (entry.region || "—"));
+  searchCell(row, entry);
   priceCell(row, entry);
   return row;
 }
@@ -83,7 +111,7 @@ export function updatePanel(view: PanelView, session: Readonly<CollectionSession
 
   const distilleries = [...new Map(session.entries.filter((entry) => entry.distillery).map((entry) => [entry.distillery!.toLocaleLowerCase("en-US"), entry.distillery!])).entries()]
     .sort((a, b) => a[1].localeCompare(b[1], "en-US"));
-  const currentDistillery = view.distillery.value;
+  const currentDistillery = criteria.distillery ?? "";
   const distilleryOptions = distilleries.map(([, label], index) => {
     const option = document.createElement("button");
     option.type = "button";
