@@ -12,6 +12,9 @@ test("panel controls have native semantics, names, focus, live status, and reduc
     assert.equal(panel.shadow.activeElement, panel.heading);
     assert.equal(panel.status.getAttribute("aria-live"), "polite");
     assert.equal(panel.query.labels?.[0]?.textContent?.includes("Search"), true);
+    assert.equal(panel.sortButton.getAttribute("aria-haspopup"), "listbox");
+    assert.equal(panel.sortButton.getAttribute("aria-controls"), "wew-sort-list");
+    assert.equal(panel.sortList.getAttribute("role"), "listbox");
     assert.equal(panel.shadow.querySelectorAll("button").length >= 5, true);
     assert.match(panel.shadow.querySelector("style")?.textContent ?? "", /prefers-reduced-motion/);
     assert.match(panel.shadow.querySelector("style")?.textContent ?? "", /max-width: 700px/);

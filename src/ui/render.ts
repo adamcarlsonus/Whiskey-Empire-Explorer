@@ -64,6 +64,13 @@ function statusText(session: Readonly<CollectionSession>): string {
 }
 
 export function updatePanel(view: PanelView, session: Readonly<CollectionSession>, criteria: Readonly<ViewCriteria>): void {
+  view.sort.value = criteria.sort;
+  const selectedSort = [...view.sortList.querySelectorAll<HTMLButtonElement>(".sort-option")]
+    .find((option) => option.dataset.value === criteria.sort);
+  if (selectedSort) view.sortValue.textContent = selectedSort.textContent;
+  for (const option of view.sortList.querySelectorAll<HTMLButtonElement>(".sort-option")) {
+    option.setAttribute("aria-selected", String(option === selectedSort));
+  }
   view.status.textContent = statusText(session);
   const terminalResults = session.status === "ready" || session.status === "partial";
   view.controls.hidden = !terminalResults;

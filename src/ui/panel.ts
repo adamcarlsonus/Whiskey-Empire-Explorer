@@ -23,6 +23,10 @@ export interface PanelView {
   distillery: HTMLInputElement;
   distilleryOptions: HTMLDataListElement;
   sort: HTMLSelectElement;
+  sortField: HTMLElement;
+  sortButton: HTMLButtonElement;
+  sortValue: HTMLElement;
+  sortList: HTMLElement;
   reset: HTMLButtonElement;
   cancel: HTMLButtonElement;
   retry: HTMLButtonElement;
@@ -58,7 +62,16 @@ export function createPanel(before: Element, actions: PanelActions): PanelView {
       <div id="wew-controls" class="controls" hidden>
         <label>Search all visible text<input id="wew-query" type="search" autocomplete="off"></label>
         <label id="wew-distillery-label" hidden>Distillery<input id="wew-distillery" type="search" list="wew-distillery-options" autocomplete="off" placeholder="All distilleries"><datalist id="wew-distillery-options"></datalist></label>
-        <label>Sort<select id="wew-sort"><option value="source">Original order</option><option value="name-asc">Name A–Z</option><option value="price-asc">Price low–high</option><option value="price-desc">Price high–low</option></select></label>
+        <div class="sort-field" id="wew-sort-field"><span class="field-label" id="wew-sort-label">Sort</span>
+          <button class="sort-trigger" id="wew-sort-button" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="wew-sort-list" aria-labelledby="wew-sort-label wew-sort-value"><span id="wew-sort-value">Original order</span><span class="chevron" aria-hidden="true"></span></button>
+          <div class="sort-list" id="wew-sort-list" role="listbox" aria-labelledby="wew-sort-label" hidden>
+            <button class="sort-option" type="button" role="option" data-value="source" aria-selected="true">Original order</button>
+            <button class="sort-option" type="button" role="option" data-value="name-asc" aria-selected="false">Name A–Z</button>
+            <button class="sort-option" type="button" role="option" data-value="price-asc" aria-selected="false">Price low–high</button>
+            <button class="sort-option" type="button" role="option" data-value="price-desc" aria-selected="false">Price high–low</button>
+          </div>
+          <select class="native-sort" id="wew-sort" tabindex="-1" aria-hidden="true"><option value="source">Original order</option><option value="name-asc">Name A–Z</option><option value="price-asc">Price low–high</option><option value="price-desc">Price high–low</option></select>
+        </div>
         <button class="secondary" id="wew-reset" type="button">Reset</button>
       </div>
       <div class="actions"><button id="wew-cancel" type="button">Cancel scan</button><button id="wew-retry" type="button" hidden>Retry</button><button id="wew-continue" type="button" hidden>Continue with partial results</button></div>
@@ -75,15 +88,65 @@ export function createPanel(before: Element, actions: PanelActions): PanelView {
     host, shadow,
     heading: required("#wew-heading"), status: required("#wew-status"), warning: required("#wew-warning"),
     controls: required("#wew-controls"), query: required("#wew-query"), distillery: required("#wew-distillery"), distilleryOptions: required("#wew-distillery-options"),
-    sort: required("#wew-sort"), reset: required("#wew-reset"), cancel: required("#wew-cancel"),
+    sort: required("#wew-sort"), sortField: required("#wew-sort-field"), sortButton: required("#wew-sort-button"),
+    sortValue: required("#wew-sort-value"), sortList: required("#wew-sort-list"),
+    reset: required("#wew-reset"), cancel: required("#wew-cancel"),
     retry: required("#wew-retry"), continueButton: required("#wew-continue"), close: required("#wew-close"),
     count: required("#wew-count"), body: required("#wew-body"), nameHeader: required("#wew-name-head"), priceHeader: required("#wew-price-head")
   };
   required<HTMLAnchorElement>("#wew-original").href = window.location.href;
   const emitCriteria = () => actions.onCriteria({ query: view.query.value, distillery: view.distillery.value || null, sort: view.sort.value as SortOrder });
+  const sortOptions = () => [...view.sortList.querySelectorAll<HTMLButtonElement>(".sort-option")];
+  const syncSort = () => {
+    const selected = sortOptions().find((option) => option.dataset.value === view.sort.value) ?? sortOptions()[0];
+    if (!selected) return;
+    view.sortValue.textContent = selected.textContent;
+    for (const option of sortOptions()) option.setAttribute("aria-selected", String(option === selected));
+  };
+  const closeSort = (restoreFocus = false) => {
+    view.sortList.hidden = true;
+    view.sortButton.setAttribute("aria-expanded", "false");
+    if (restoreFocus) view.sortButton.focus();
+  };
+  const openSort = () => {
+    view.sortList.hidden = false;
+    view.sortButton.setAttribute("aria-expanded", "true");
+    (sortOptions().find((option) => option.getAttribute("aria-selected") === "true") ?? sortOptions()[0])?.focus();
+  };
+  const chooseSort = (option: HTMLButtonElement) => {
+    view.sort.value = option.dataset.value ?? "source";
+    syncSort();
+    closeSort(true);
+    emitCriteria();
+  };
   view.query.addEventListener("input", emitCriteria);
   view.distillery.addEventListener("input", emitCriteria);
-  view.sort.addEventListener("change", emitCriteria);
+  view.sort.addEventListener("change", () => { syncSort(); emitCriteria(); });
+  view.sortButton.addEventListener("click", () => view.sortList.hidden ? openSort() : closeSort());
+  view.sortButton.addEventListener("keydown", (event) => {
+    if (["ArrowDown", "ArrowUp", "Enter", " "].includes(event.key)) { event.preventDefault(); openSort(); }
+    if (event.key === "Escape") closeSort();
+  });
+  for (const option of sortOptions()) {
+    option.addEventListener("click", () => chooseSort(option));
+    option.addEventListener("keydown", (event) => {
+      const options = sortOptions();
+      const index = options.indexOf(option);
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        options[(index + (event.key === "ArrowDown" ? 1 : -1) + options.length) % options.length]?.focus();
+      } else if (event.key === "Home" || event.key === "End") {
+        event.preventDefault();
+        options[event.key === "Home" ? 0 : options.length - 1]?.focus();
+      } else if (event.key === "Escape") {
+        event.preventDefault();
+        closeSort(true);
+      }
+    });
+  }
+  view.sortField.addEventListener("focusout", () => setTimeout(() => {
+    if (!view.sortField.contains(view.shadow.activeElement)) closeSort();
+  }, 0));
   view.reset.addEventListener("click", actions.onReset);
   view.cancel.addEventListener("click", actions.onCancel);
   view.retry.addEventListener("click", actions.onRetry);
