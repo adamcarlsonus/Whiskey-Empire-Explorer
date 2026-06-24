@@ -127,9 +127,9 @@ export function createPanel(before: Element, actions: PanelActions): PanelView {
   };
   const chooseDistillery = (option: HTMLButtonElement) => {
     view.distillery.value = option.dataset.value ?? "";
-    closeDistilleries();
     emitCriteria();
     view.distillery.focus();
+    closeDistilleries();
   };
   const sortOptions = () => [...view.sortList.querySelectorAll<HTMLButtonElement>(".sort-option")];
   const syncSort = () => {

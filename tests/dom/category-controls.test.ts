@@ -23,7 +23,9 @@ test("shows distillery control only when producers exist", async () => {
     panel.distillery.focus();
     assert.equal(panel.distilleryList.hidden, false);
     assert.equal(panel.distillery.getAttribute("aria-expanded"), "true");
-    panel.distilleryList.querySelector<HTMLButtonElement>(".distillery-option")?.click();
+    const distilleryOption = panel.distilleryList.querySelector<HTMLButtonElement>(".distillery-option")!;
+    distilleryOption.focus();
+    distilleryOption.click();
     assert.equal(panel.distillery.value, "anCnoc");
     assert.equal(panel.distilleryList.hidden, true);
     panel.distillery.value = "";
