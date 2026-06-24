@@ -42,13 +42,13 @@ Expected result:
 ## Validate the live primary flow
 
 1. Open `https://thewestsideblono.com/drink/drink-menu/`.
-2. Select the **Whiskey Empire** tab yourself.
-3. Open the extension popup and choose **Scan**.
+2. Leave the restaurant's default drink tab selected.
+3. Open the extension popup and choose **Scan**; confirm Whiskey Empire is selected automatically.
 4. Confirm one inline panel appears above the original list and the original content remains intact.
 5. Confirm progress changes once per page and the popup may close without stopping the panel scan.
 6. Search for text found in name and optional fields on different pagination pages.
 7. Sort by name, price low-to-high, and price high-to-low.
-8. Filter by category when categories are exposed, then reset all criteria.
+8. Type or select a distillery in the searchable combobox, then reset all criteria.
 9. Confirm the combined count and spot-check entries from the first, middle, and final pages.
 
 ## Validate privacy and permissions
@@ -69,7 +69,7 @@ Expected result:
 
 ## Validate failure behavior
 
-- Activate before selecting Whiskey Empire: show guidance without scraping other drink sections.
+- Scan from another drink tab: select Whiskey Empire automatically without scraping other sections.
 - Activate on another URL: popup disables Scan and requests no broader access.
 - Use the unsupported fixture: show a clear error and preserve the source page.
 - Simulate a failed middle page: retain labeled partial results and offer Retry.

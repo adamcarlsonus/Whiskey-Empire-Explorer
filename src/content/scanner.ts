@@ -15,7 +15,7 @@ function freshSession(): CollectionSession {
 function publicMessage(code: ScanErrorCode): string {
   const messages: Record<ScanErrorCode, string> = {
     WRONG_URL: "Open the supported Westside drink menu first.",
-    TAB_NOT_ACTIVE: "Select the Whiskey Empire tab, then scan again.",
+    TAB_NOT_ACTIVE: "The Whiskey Empire collection could not be opened automatically.",
     UNSUPPORTED_STRUCTURE: "This version of the whiskey list is not supported.",
     REQUEST_FAILED: "A whiskey-list page could not be requested.",
     PARSE_FAILED: "A whiskey-list page could not be read.",

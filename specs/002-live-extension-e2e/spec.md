@@ -33,7 +33,7 @@ end-to-end test. Let's find a way to do that."
 ### User Story 1 - Prove a Real Scan Works (Priority: P1)
 
 A developer runs one explicit live end-to-end check that installs the production extension into an
-isolated browser session, opens the actual restaurant drink-menu page, selects Whiskey Empire,
+isolated browser session, opens the actual restaurant drink-menu page, leaves its default tab active,
 activates the extension through its real browser action, starts a scan, and observes non-empty
 enhanced results.
 
@@ -47,8 +47,8 @@ whiskey entry and a successful terminal scan status.
 **Acceptance Scenarios**:
 
 1. **Given** a fresh isolated browser profile and the current production extension build, **When**
-   the live test runs, **Then** it opens the exact restaurant page, selects Whiskey Empire, activates
-   the extension through a browser-recognized user gesture, and starts Scan from the real popup.
+   the live test runs, **Then** it opens the exact restaurant page, activates the extension through a
+   browser-recognized user gesture, starts Scan, and observes production select Whiskey Empire.
 2. **Given** Scan has started on the real page, **When** collection finishes, **Then** the test
    observes the injected panel, a successful terminal status, and at least one normalized result.
 3. **Given** real results are present, **When** the test searches using text from a collected entry
@@ -138,8 +138,8 @@ uses fresh local state, the same production permissions, a distinct report, and 
 - **FR-006**: The test MUST open `https://thewestsideblono.com/drink/drink-menu/` over the network and
   MUST treat a redirect to another origin, interstitial, access denial, or unavailable page as a failed
   live-page stage.
-- **FR-007**: The test MUST identify and select the visible Whiskey Empire tab through the live user
-  interface without manual intervention and MUST record which page/frame element was used.
+- **FR-007**: The test MUST identify the visible Whiskey Empire control without selecting it, start
+  the production scan, and verify that production selected it automatically.
 - **FR-008**: The test MUST invoke the real extension default action against the active restaurant tab
   through Chromium's browser-owned `Extensions.triggerAction` operation, which exercises the action
   and temporary active-page access path. If Chromium does not expose its toolbar popup bubble as an

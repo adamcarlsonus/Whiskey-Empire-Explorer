@@ -8,8 +8,8 @@
 
 Replace the existing best-effort live script with a macOS Playwright runner that builds and loads
 the unchanged `dist/` extension into Playwright-managed Chromium, verifies installation in browser
-state, opens the live Westside page, selects Whiskey Empire, invokes the browser-owned extension
-default action for that tab, clicks the production popup Scan control, and asserts successful panel results,
+state, opens the live Westside page, observes Whiskey Empire without selecting it, invokes the
+browser-owned extension default action, clicks production Scan, and asserts automatic tab selection and panel results,
 search, and sorting. A staged state machine enforces local deadlines, a 120-second global budget,
 cleanup, and a sanitized JSON report on every outcome.
 

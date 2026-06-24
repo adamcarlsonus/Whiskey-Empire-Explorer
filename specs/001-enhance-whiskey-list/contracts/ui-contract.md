@@ -20,7 +20,7 @@ Panel states:
 | State | Required UI |
 |-------|-------------|
 | Validating/scanning | Heading, determinate counts when known, live status, Cancel, original-page link. |
-| Ready | Search, optional category filter, sort control/columns, result count, Reset, Close, results. |
+| Ready | Search, optional searchable distillery combobox, sort control/columns, result count, Reset, Close, results. |
 | Partial | Ready UI plus persistent warning and Retry. |
 | Empty search | Controls plus no-results message and Clear Search. |
 | Unsupported/failed | Clear reason, Retry when meaningful, Close, original-page link; no fabricated rows. |
@@ -30,7 +30,7 @@ Error/action mapping:
 
 | Outcome | Permitted actions |
 |---------|-------------------|
-| Wrong URL or inactive Whiskey Empire tab | Guidance and Close |
+| Wrong URL or Whiskey Empire activation failure | Guidance and Close |
 | Unsupported structure or zero valid entries | Original Page and Close |
 | Initial request/parse failure | Retry, Original Page, and Close |
 | Failed middle page or safety limit | Retry, Continue with Partial Results, Original Page, and Close |

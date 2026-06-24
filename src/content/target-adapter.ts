@@ -16,6 +16,7 @@ export interface PageExtraction {
 const ROW_SELECTORS = ["[data-whiskey-entry]", ".whiskey-entry", ".menu-item", "tr"];
 const NAME_SELECTORS = ["[data-name]", ".whiskey-name", ".item-name", "th", "h3", "h4", "strong"];
 const PRICE_SELECTORS = ["[data-price]", ".whiskey-price", ".price", ".item-price", "td:last-child"];
+const TAB_SELECTORS = '[role="tab"], .et_pb_tabs_controls li, [data-tab], .tablinks, .tab-anchor[data-tab-id]';
 
 function textFrom(root: Element, selectors: readonly string[]): string {
   for (const selector of selectors) {
@@ -36,7 +37,7 @@ function isSelectedTab(element: Element): boolean {
 
 function findTabRoot(document: Document): Element | null {
   const explicit = document.querySelector("[data-whiskey-empire-list]");
-  const tabs = [...document.querySelectorAll('[role="tab"], .et_pb_tabs_controls li, [data-tab], .tablinks, .tab-anchor[data-tab-id]')];
+  const tabs = [...document.querySelectorAll(TAB_SELECTORS)];
   const whiskeyTabs = tabs.filter((tab) => isWhiskeyTab(tab));
   const whiskeyTab = whiskeyTabs.find((tab) => isSelectedTab(tab) && /whiskey\s+empire/i.test(tab.closest(".ut-menu")?.querySelector(".menu-title")?.textContent ?? ""))
     ?? whiskeyTabs.find((tab) => isSelectedTab(tab))
@@ -57,6 +58,20 @@ function findTabRoot(document: Document): Element | null {
   return untappdPanel
     ?? whiskeyTab.closest(".tabs, .et_pb_tabs")?.querySelector('.et_pb_tab_active, [role="tabpanel"]')
     ?? null;
+}
+
+export async function activateWhiskeyTab(document: Document, timeoutMs = 5_000): Promise<boolean> {
+  if (!isSupportedUrl(document.location?.href ?? "") || locateActiveList(document).ok) return locateActiveList(document).ok;
+  const tab = [...document.querySelectorAll<HTMLElement>(TAB_SELECTORS)].find((candidate) => isWhiskeyTab(candidate));
+  if (!tab) return false;
+  if (isSelectedTab(tab)) return true;
+  tab.click();
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (locateActiveList(document).ok) return true;
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  return locateActiveList(document).ok;
 }
 
 export function locateActiveList(document: Document, pageUrl = document.location?.href ?? ""): LocateResult {

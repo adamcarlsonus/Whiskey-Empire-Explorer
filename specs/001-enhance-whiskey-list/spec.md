@@ -7,7 +7,7 @@
 **Status**: Draft
 
 **Input**: User description: "Enhance a paginated restaurant whiskey list with full-list
-search, sorting, category filtering, progress feedback, local-only processing, and clear
+search, sorting, distillery filtering, progress feedback, local-only processing, and clear
 unsupported-page errors."
 
 ## Clarifications
@@ -26,6 +26,11 @@ unsupported-page errors."
 - Q: Which Chrome permissions and activation model should v1 use? → A: Require a toolbar click
   and use only temporary active-page access plus script-injection permission.
 
+### Session 2026-06-23
+
+- Q: Must the visitor select Whiskey Empire before scanning? → A: No. Scan MUST select the
+  Whiskey Empire tab automatically, wait for its list to become available, and then collect it.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Search the Complete List (Priority: P1)
@@ -38,7 +43,7 @@ collected entries without manually moving through pagination.
 value and removes the largest burden in the existing experience.
 
 **Independent Test**: Use a list with matches on multiple pages, activate the enhancement,
-search for terms present in name, brand, type, region, proof, and descriptive text, and verify
+search for terms present in name, distillery, type, region, proof, and descriptive text, and verify
 that every matching entry from the collected pages is shown.
 
 **Acceptance Scenarios**:
@@ -78,25 +83,24 @@ visible.
 
 ---
 
-### User Story 3 - Filter by Available Category (Priority: P3)
+### User Story 3 - Filter by Distillery (Priority: P3)
 
-A visitor narrows the combined list to one or more categories exposed by the restaurant,
-such as bourbon, rye, or scotch, while retaining search and sort controls.
+A visitor narrows the combined list by distillery using the producer metadata exposed by the
+restaurant, while retaining search and sort controls.
 
-**Why this priority**: Category filtering speeds exploration but depends on the source page
-providing reliable category information.
+**Why this priority**: Distillery filtering speeds exploration across the large collection.
 
-**Independent Test**: Use a list containing several visible categories, select a category,
-and verify that only entries from that category remain while search and sorting still work.
+**Independent Test**: Use a list containing several visible producers, select or type a distillery,
+and verify that only matching entries remain while search and sorting still work.
 
 **Acceptance Scenarios**:
 
-1. **Given** the source identifies categories, **When** collection completes, **Then** the
-   enhancement offers the distinct visible categories as filter choices.
-2. **Given** an active category filter, **When** the visitor searches or sorts, **Then** both
+1. **Given** the source identifies producers, **When** collection completes, **Then** the
+   enhancement offers the distinct visible distilleries through a searchable combobox.
+2. **Given** an active distillery filter, **When** the visitor searches or sorts, **Then** both
    operations apply only to the filtered entries and the active filter remains apparent.
-3. **Given** no reliable categories are visible, **When** collection completes, **Then** no
-   category control is shown and search and sorting remain fully usable.
+3. **Given** no producer metadata is visible, **When** collection completes, **Then** no
+   distillery control is shown and search and sorting remain fully usable.
 
 ---
 
@@ -150,8 +154,8 @@ back to the original page.
   Empire list. "Enhanced view" and "overlay" refer to this inline panel and do not describe a modal,
   replacement page, or separate tab.
 - **Active Whiskey Empire tab**: The supported drink-menu URL is active, the restaurant's Whiskey
-  Empire tab control reports its selected state, and its associated content region is visible. The
-  visitor selects this tab; the extension does not select it automatically.
+  Empire tab control reports its selected state, and its associated content region is visible. Scan
+  selects this tab automatically and waits for the associated content before extraction.
 - **Recognizable name**: A non-empty trimmed string taken from the candidate row's primary name
   element or, if that selector moved, the first text element occupying the same repeated row-name
   role. Category headings, prices, proof values, controls, and surrounding section text cannot serve
@@ -163,8 +167,8 @@ back to the original page.
 - **Entry-visible text**: Text contained within a candidate whiskey row plus the explicit category
   heading or field associated with that row. Pagination controls, tab labels, neighboring rows, and
   unrelated drink-menu sections are excluded.
-- **Reliable category**: An explicit row field or section heading associated consistently with one or
-  more whiskey rows. Categories are never inferred from the whiskey name, notes, or external data.
+- **Distillery**: The visible producer value from `.item-producer` or its supported semantic fallback.
+  Distilleries are never inferred from the whiskey name, notes, or external data.
 - **Supported structure**: The active Whiskey Empire region is identifiable and contains a repeated
   row pattern from which at least one valid name-and-price entry can be extracted. Reordered fields,
   wrapper changes, and moved elements are minor changes when semantic labels and repeated row roles
@@ -182,8 +186,8 @@ back to the original page.
 ### Functional Requirements
 
 - **FR-001**: The v1 product MUST target the Whiskey Empire tab on the live Westside drink-menu
-  page at `https://thewestsideblono.com/drink/drink-menu/` and MUST activate only after the visitor
-  opens that tab and clicks the extension's toolbar action.
+  page at `https://thewestsideblono.com/drink/drink-menu/`. After the visitor clicks Scan, it MUST
+  select Whiskey Empire automatically and wait for its associated content before collection.
 - **FR-002**: The product MUST identify and process the full finite set of whiskey-list pages
   reachable through pagination exposed by the currently viewed list, loading discovered pages
   in the background without changing the visible restaurant page. Discovery MUST support numbered
@@ -215,9 +219,9 @@ back to the original page.
   unambiguous sortable price after validly priced entries without discarding them. Equal numeric
   prices MUST be ordered by normalized name then original source order; non-comparable prices MUST
   follow comparable prices in both price directions. Name sorting MUST be case-insensitive and stable.
-- **FR-012**: When reliable categories are visible in the source list, the visitor MUST be able to
-  filter by those categories; when none are visible, the category control MUST be omitted.
-- **FR-013**: Search, category filtering, and sorting MUST compose predictably, and the interface
+- **FR-012**: When producer metadata is visible, the visitor MUST be able to filter it through a
+  searchable distillery combobox; when none is visible, the distillery control MUST be omitted.
+- **FR-013**: Search, distillery filtering, and sorting MUST compose predictably, and the interface
   MUST visibly identify all active criteria and provide a one-step reset.
 - **FR-014**: The enhanced view MUST preserve a visible link to the canonical restaurant list and
   MUST appear as an inline panel above the original Whiskey Empire list, which MUST remain intact
@@ -330,17 +334,17 @@ back to the original page.
 | FR-005–FR-007 | US1 complete searchable list | SC-001, SC-008 |
 | FR-008–FR-009, FR-013 | US1 search | SC-002, SC-003 |
 | FR-010–FR-011 | US2 sorting | SC-003, SC-004 |
-| FR-012 | US3 category filtering | SC-003, SC-007 |
+| FR-012 | US3 distillery filtering | SC-003, SC-007 |
 | FR-014, FR-016–FR-017 | US1 panel; US4 safe failure | SC-006, SC-007 |
 | FR-015 | US4 recovery | SC-006 |
 | FR-019–FR-021, FR-025 | Cross-cutting privacy | SC-008, SC-009 |
 
 ## Assumptions
 
-- The authoritative v1 source structure is the live Westside drink-menu page after the visitor
-  opens the Whiskey Empire tab; automatic tab selection is outside the initial scope.
-- Automatic activation is outside scope; each collection session begins with an explicit toolbar
-  click while the target page and Whiskey Empire tab are active.
+- The authoritative v1 source structure is the live Westside drink-menu page after the extension
+  opens the Whiskey Empire tab.
+- Each collection session begins with an explicit toolbar Scan click while the target page is active;
+  that action authorizes automatic Whiskey Empire tab selection.
 - The target restaurant exposes a finite set of whiskey-list pages through links or controls that
   can be traced from the active Whiskey Empire list.
 - "Currently viewed restaurant page" includes the whiskey list's validated Untappd source-provider
@@ -348,7 +352,7 @@ back to the original page.
 - Loading another pagination page may make the same normal request that a visitor would trigger by
   following that pagination link; these requests occur in the background, and no collected content
   or interaction data is added to them.
-- Category filtering is conditional because not every source list provides reliable category labels.
+- Distillery filtering is conditional because not every source row provides producer metadata.
 - If multiple pour prices appear for one entry, they remain in original display text; a price is
   sortable only when one unambiguous comparable amount can be identified.
 - Duplicate entries with the same normalized identity and source context are presented once; entries

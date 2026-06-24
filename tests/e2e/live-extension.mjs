@@ -1,7 +1,7 @@
 import { launchIsolatedBrowser, readProductionIdentity, verifyInstalledExtension } from "./support/browser.mjs";
 import { CLEANUP_RESERVE_MS, REPORT_ROOT, STAGE_DEADLINES, TARGET_URL, WORK_DEADLINE_MS } from "./support/config.mjs";
 import { attachDiagnostics, collectVisibleElements, recordDirectHarnessRequest, recordFrames } from "./support/diagnostics.mjs";
-import { activateActionPopup, assertSearch, assertSort, observeSuccessfulPanel, openLivePage, selectWhiskeyTab, startProductionScan } from "./support/live-flow.mjs";
+import { activateActionPopup, assertSearch, assertSort, assertWhiskeyTabSelected, observeSuccessfulPanel, observeWhiskeyTab, openLivePage, startProductionScan } from "./support/live-flow.mjs";
 import { seededFailure, throwIfSeeded } from "./support/failure-fixtures.mjs";
 import { checkPrerequisites, exitCodeFor } from "./support/prerequisites.mjs";
 import { addError, createReport, pruneReports, writeReport } from "./support/report.mjs";
@@ -67,11 +67,12 @@ async function scenario() {
     return livePage;
   });
 
-  report.observations.whiskeyTab = await stage("whiskey-tab", () => selectWhiskeyTab(page));
+  report.observations.whiskeyTab = await stage("whiskey-tab", () => observeWhiskeyTab(page));
   popup = await stage("action-popup", () => activateActionPopup(browserSession.context, page, extensionIdentity.id));
   report.observations.popup = await stage("scan-start", () => startProductionScan(popup));
 
   const completed = await stage("scan-completion", () => observeSuccessfulPanel(page));
+  report.observations.whiskeyTab.selected = await assertWhiskeyTabSelected(page);
   if (completed.resultCount !== report.observations.whiskeyTab.advertisedTotal) {
     throw new Error(`Scan collected ${completed.resultCount} of ${report.observations.whiskeyTab.advertisedTotal} advertised entries`);
   }

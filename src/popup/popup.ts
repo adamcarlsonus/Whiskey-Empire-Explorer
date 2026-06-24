@@ -46,7 +46,7 @@ async function initialize(): Promise<void> {
     activeTabId = tab?.id ?? null;
     const supported = Boolean(tab?.url && isSupportedUrl(tab.url));
     if (scanButton) scanButton.disabled = !supported;
-    if (guidance) guidance.textContent = supported ? "Select the Whiskey Empire tab, then scan." : "Open the Westside drink menu to use this extension.";
+    if (guidance) guidance.textContent = supported ? "Scan will open the Whiskey Empire collection automatically." : "Open the Westside drink menu to use this extension.";
     if (supported) {
       await poll();
       pollId = window.setInterval(() => void poll(), 750);

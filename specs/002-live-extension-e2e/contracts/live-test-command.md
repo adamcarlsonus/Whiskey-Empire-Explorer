@@ -25,13 +25,13 @@ Browser installation is explicit setup. `test:e2e:live` MUST NOT be called by `n
 4. Open the exact target URL and reject cross-origin redirects or interstitials.
    Record request provenance: direct harness requests are limited to the restaurant origin, while
    document-initiated subresources are retained only as bounded origin evidence.
-5. Find and select the visible Whiskey Empire control without manual intervention.
+5. Find the visible Whiskey Empire control without selecting it.
 6. Focus the page, run Chromium's browser-owned default action for the extension and active tab target,
    and observe the resulting extension popup target. If the toolbar bubble is not exposed as a page,
    open the unchanged production popup in a background extension tab only after action activation and
    keep the restaurant tab active.
-7. Click the production popup's `Scan whiskey list` button.
-8. Observe the injected production panel and require `Scan complete` plus a positive count.
+7. Click the production popup's `Scan whiskey list` button and require production to select Whiskey Empire.
+8. Observe the injected production panel and require `Scan complete` plus the advertised count.
 9. Search with a token derived from an observed name and require a positive matching subset.
 10. Select `price-desc` and require the selected value and descending price `aria-sort`.
 11. Close Chromium, delete the temporary profile, retain the sanitized report, and prune reports

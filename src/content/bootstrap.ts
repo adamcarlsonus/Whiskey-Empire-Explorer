@@ -1,7 +1,7 @@
 import { resetCriteria } from "../domain/select-entries.js";
 import type { CollectionSession, ViewCriteria } from "../domain/types.js";
 import { isExtensionRequest, type ExtensionResponse } from "../shared/messages.js";
-import { locateActiveList } from "./target-adapter.js";
+import { activateWhiskeyTab, locateActiveList } from "./target-adapter.js";
 import { Scanner } from "./scanner.js";
 import { createPanel, focusPanel, PANEL_HOST_ID, type PanelView } from "../ui/panel.js";
 import { updatePanel } from "../ui/render.js";
@@ -59,6 +59,7 @@ function createOrFocusPanel(): PanelView {
 }
 
 async function start(): Promise<ExtensionResponse> {
+  await activateWhiskeyTab(document);
   createOrFocusPanel();
   await state.scanner.start(document, render);
   return { ok: true, snapshot: state.scanner.snapshot() };

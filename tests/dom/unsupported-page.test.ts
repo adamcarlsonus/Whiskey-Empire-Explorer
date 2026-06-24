@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { extractPage, locateActiveList } from "../../src/content/target-adapter.js";
+import { activateWhiskeyTab, extractPage, locateActiveList } from "../../src/content/target-adapter.js";
 import { loadFixture } from "../helpers/dom.js";
 
 test("classifies inactive and unsupported structures without altering source", async () => {
@@ -16,4 +16,14 @@ test("requires a selected Whiskey Empire tab", async () => {
   dom.window.document.querySelector('[role="tab"]')?.setAttribute("aria-selected", "false");
   dom.window.document.querySelector("[data-whiskey-empire-list]")?.removeAttribute("data-whiskey-empire-list");
   assert.deepEqual(locateActiveList(dom.window.document), { ok: false, code: "TAB_NOT_ACTIVE" });
+});
+
+test("activates the Whiskey Empire tab before scanning", async () => {
+  const dom = await loadFixture("whiskey-page-1.html");
+  const tab = dom.window.document.querySelector<HTMLElement>('[role="tab"]')!;
+  tab.setAttribute("aria-selected", "false");
+  tab.addEventListener("click", () => tab.setAttribute("aria-selected", "true"));
+  assert.equal(await activateWhiskeyTab(dom.window.document, 100), true);
+  assert.equal(tab.getAttribute("aria-selected"), "true");
+  assert.equal(locateActiveList(dom.window.document).ok, true);
 });

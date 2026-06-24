@@ -44,13 +44,13 @@ export async function openLivePage(context) {
   return page;
 }
 
-export async function selectWhiskeyTab(page) {
+export async function observeWhiskeyTab(page) {
   await page.waitForLoadState("domcontentloaded");
   const deadline = Date.now() + 18_000;
   let visible = [];
   while (Date.now() < deadline && visible.length === 0) {
     for (const frame of page.frames()) {
-      const candidates = frame.getByText(/Whiskey\s+Empire/i);
+      const candidates = frame.locator(".ut-menu .tab-anchor[data-tab-id]").filter({ hasText: /Whiskey\s+Empire/i });
       for (let index = 0; index < await candidates.count(); index += 1) {
         const candidate = candidates.nth(index);
         if (await candidate.isVisible().catch(() => false)) visible.push({ frame, candidate });
@@ -60,11 +60,8 @@ export async function selectWhiskeyTab(page) {
   }
   assert.ok(visible.length > 0, "No visible Whiskey Empire control was found");
   for (const { frame, candidate } of visible) {
-    await candidate.click();
     const menu = candidate.locator("xpath=ancestor::div[contains(concat(' ', normalize-space(@class), ' '), ' ut-menu ')][1]");
-    const activated = await menu.locator("h2.menu-title").filter({ hasText: /^Whiskey Empire$/ })
-      .waitFor({ state: "visible", timeout: 3_000 }).then(() => true).catch(() => false);
-    if (!activated) continue;
+    if (!await menu.count()) continue;
     const selected = await candidate.evaluate((element) => element.getAttribute("aria-selected") === "true" || /(^|\s)(active|selected|et_pb_tab_active)(\s|$)/i.test(element.className));
     const whiskeyPanel = menu.locator(".tab-content")
       .filter({ hasText: /Whiskey\s+Empire/i })
@@ -79,7 +76,20 @@ export async function selectWhiskeyTab(page) {
       advertisedTotal
     };
   }
-  throw new Error("Visible Whiskey Empire controls did not activate their associated menu");
+  throw new Error("The visible Whiskey Empire control was not associated with a readable menu");
+}
+
+export async function assertWhiskeyTabSelected(page) {
+  for (const frame of page.frames()) {
+    const candidates = frame.locator(".ut-menu .tab-anchor[data-tab-id]").filter({ hasText: /Whiskey\s+Empire/i });
+    for (let index = 0; index < await candidates.count(); index += 1) {
+      const candidate = candidates.nth(index);
+      if (!await candidate.isVisible().catch(() => false)) continue;
+      const selected = await candidate.evaluate((element) => element.getAttribute("aria-selected") === "true" || /(^|\s)(active|selected|et_pb_tab_active)(\s|$)/i.test(element.className));
+      if (selected) return true;
+    }
+  }
+  throw new Error("The production scan did not select the Whiskey Empire tab");
 }
 
 export async function activateActionPopup(context, page, extensionId) {

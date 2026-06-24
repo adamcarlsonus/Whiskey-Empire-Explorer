@@ -9,11 +9,11 @@
 
 ## Summary
 
-Build a Chrome Manifest V3 extension that the visitor opens from a toolbar popup after selecting
-the Whiskey Empire tab. The popup programmatically injects a TypeScript-built content script under
+Build a Chrome Manifest V3 extension that the visitor opens from a toolbar popup on the drink menu.
+The injected script selects Whiskey Empire automatically, then discovers and collects its list under
 temporary `activeTab` access. That script discovers validated pagination exposed by the list, fetches pages
 sequentially, extracts raw rows, normalizes entries, and renders an accessible inline panel
-above the untouched source list. Search, category filtering, and sorting operate entirely on the
+above the untouched source list. Search, distillery filtering, and sorting operate entirely on the
 in-memory normalized collection. There is no backend, telemetry, account, persistent storage,
 service worker, static content-script match, or persistent host permission.
 

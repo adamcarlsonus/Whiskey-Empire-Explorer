@@ -1,7 +1,7 @@
 # Live Restaurant Page Validation
 
 **Target**: https://thewestsideblono.com/drink/drink-menu/  
-**Required state**: Fresh isolated browser profile; the harness selects Whiskey Empire.  
+**Required state**: Fresh isolated browser profile; production Scan selects Whiskey Empire.  
 **Result legend**: PASS / FAIL / BLOCKED with dated notes and evidence.
 
 **2026-06-21 automation note**: PASSED — Playwright-managed Chromium loaded the production `dist/`
@@ -9,7 +9,7 @@ package and completed the real action → popup → Scan → panel → search �
 
 ## Automated live gate
 
-- [x] Harness selects the live Whiskey Empire tab without manual intervention.
+- [x] Harness leaves the default tab active and production Scan selects Whiskey Empire.
 - [x] Browser-owned `Extensions.triggerAction` runs the real default action for the restaurant tab.
 - [x] Production popup enables and acknowledges **Scan whiskey list** after action activation.
 - [x] Scan reaches a complete state with 100 normalized live results; partial, unsupported, empty,
