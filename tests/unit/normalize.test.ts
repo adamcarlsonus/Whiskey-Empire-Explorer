@@ -24,3 +24,12 @@ test("skips invalid records while preserving distinct source rows", () => {
   assert.equal(result.entries.length, 2);
   assert.equal(result.skipped, 1);
 });
+
+test("removes source hash codes while preserving and separating the whiskey type", () => {
+  const result = normalizeRecord({ ...raw, rawName: "Example Reserve #BOU Bourbon", rawType: "#BOU Bourbon", allVisibleText: "Example Reserve #BOU Bourbon" });
+  assert.equal(result.ok, true);
+  if (!result.ok) return;
+  assert.equal(result.entry.name, "Example Reserve");
+  assert.equal(result.entry.type, "Bourbon");
+  assert.equal(result.entry.searchText, "example reserve bourbon");
+});

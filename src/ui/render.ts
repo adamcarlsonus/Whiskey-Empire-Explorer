@@ -9,14 +9,46 @@ function cell(row: HTMLTableRowElement, label: string, value: string): void {
   row.append(td);
 }
 
+function nameCell(row: HTMLTableRowElement, entry: WhiskeyEntry): void {
+  const td = document.createElement("td");
+  td.dataset.label = "Name";
+  const name = document.createElement("span");
+  name.className = "item-name";
+  name.textContent = entry.name;
+  td.append(name);
+  if (entry.type) {
+    const type = document.createElement("span");
+    type.className = "item-type";
+    type.textContent = entry.type;
+    td.append(" ", type);
+  }
+  row.append(td);
+}
+
+function priceCell(row: HTMLTableRowElement, entry: WhiskeyEntry): void {
+  const td = document.createElement("td");
+  td.dataset.label = "Price";
+  const label = document.createElement("span");
+  label.className = "price-label";
+  label.textContent = "Price";
+  const leader = document.createElement("span");
+  leader.className = "price-leader";
+  leader.setAttribute("aria-hidden", "true");
+  const value = document.createElement("span");
+  value.className = "price-value";
+  value.textContent = entry.sortablePriceCents === null ? `${entry.displayPrice} (not comparable)` : entry.displayPrice;
+  td.append(label, leader, value);
+  row.append(td);
+}
+
 function rowFor(entry: WhiskeyEntry): HTMLTableRowElement {
   const row = document.createElement("tr");
   row.dataset.entryId = entry.id;
-  cell(row, "Name", entry.name);
-  cell(row, "Distillery", entry.distillery ?? "—");
+  nameCell(row, entry);
   cell(row, "Proof", entry.proof ?? "—");
-  cell(row, "Price", entry.sortablePriceCents === null ? `${entry.displayPrice} (not comparable)` : entry.displayPrice);
-  cell(row, "Notes", entry.notes ?? ([entry.type, entry.region].filter(Boolean).join(" · ") || "—"));
+  cell(row, "Distillery", entry.distillery ?? "—");
+  cell(row, "Notes", entry.notes ?? (entry.region || "—"));
+  priceCell(row, entry);
   return row;
 }
 

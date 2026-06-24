@@ -30,6 +30,8 @@ unsupported-page errors."
 
 - Q: Must the visitor select Whiskey Empire before scanning? → A: No. Scan MUST select the
   Whiskey Empire tab automatically, wait for its list to become available, and then collect it.
+- Q: How should source category codes and results be presented? → A: Remove opaque hash codes such
+  as `#BOU` and `#RYE`, preserve the readable type, and use a spacious menu-style table layout.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -201,12 +203,13 @@ back to the original page.
   For an unknown total it MUST report processed and newly discovered page counts; progress MUST also
   expose accepted entries and skipped candidates. At most one progress announcement occurs per page.
 - **FR-005**: A valid collected entry MUST have a recognizable name and displayed price. The product
-  MUST preserve all other visible text and capture category, brand, type, region, proof, description,
+  MUST preserve all other meaningful visible text and capture category, distillery, type, region, proof, description,
   and source link when present; candidates missing either required field MUST be skipped and counted
   in a collection warning.
 - **FR-006**: The product MUST normalize whitespace, capitalization used for comparison, prices,
-  categories, and duplicate entries while retaining the original display text and scalar source
-  context. Source context MUST NOT retain DOM nodes or executable page content.
+  categories, and duplicate entries while retaining meaningful display text and scalar source
+  context. Opaque source hash codes matching `#[A-Z0-9]{2,5}` MUST be omitted from display and search
+  text while their readable type remains. Source context MUST NOT retain DOM nodes or executable page content.
 - **FR-007**: Extraction, normalization, searching, sorting, filtering, and rendering MUST remain
   separate processing stages with defined entry inputs and outputs.
 - **FR-008**: The visitor MUST be able to search the complete collected list using a case-insensitive

@@ -13,6 +13,10 @@ function display(value: string | undefined): string | null {
   return normalized || null;
 }
 
+function withoutSourceCode(value: string | undefined): string | null {
+  return display(value?.replace(/(^|\s)#[a-z0-9]{2,5}\b/gi, "$1"));
+}
+
 function stableId(value: string): string {
   let hash = 2166136261;
   for (let index = 0; index < value.length; index += 1) {
@@ -23,7 +27,9 @@ function stableId(value: string): string {
 }
 
 export function normalizeRecord(raw: RawWhiskeyRecord, sourceOrder = raw.sourceRowIndex): NormalizeResult {
-  const name = display(raw.rawName);
+  const type = withoutSourceCode(raw.rawType);
+  let name = withoutSourceCode(raw.rawName);
+  if (name && type && normalizeText(name).endsWith(normalizeText(type))) name = display(name.slice(0, -type.length));
   if (!name) return { ok: false, reason: "MISSING_NAME" };
   const rawPrice = display(raw.rawPrice);
   if (!rawPrice || !containsUsdAmount(rawPrice)) return { ok: false, reason: "MISSING_PRICE" };
@@ -47,11 +53,11 @@ export function normalizeRecord(raw: RawWhiskeyRecord, sourceOrder = raw.sourceR
       category,
       normalizedCategory,
       distillery: display(raw.rawDistillery),
-      type: display(raw.rawType),
+      type,
       region: display(raw.rawRegion),
       proof: display(raw.rawProof),
       notes: display(raw.rawNotes),
-      searchText: normalizeText(raw.allVisibleText),
+      searchText: normalizeText(raw.allVisibleText.replace(/(^|\s)#[a-z0-9]{2,5}\b/gi, "$1")),
       source: { pageUrl: raw.sourcePageUrl, rowIndex: raw.sourceRowIndex, sourceHref }
     }
   };

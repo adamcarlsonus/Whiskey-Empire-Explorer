@@ -14,6 +14,8 @@ and privacy statement. It does not display the whiskey results.
 
 Exactly one panel host is inserted immediately before the active Whiskey Empire list. An open Shadow
 DOM contains its styles and UI; the restaurant's original DOM remains unchanged below it.
+Results retain semantic table markup and sort state while CSS presents each row as a menu item with
+name/type, proof and distillery metadata, notes, and a dotted price leader.
 
 Panel states:
 

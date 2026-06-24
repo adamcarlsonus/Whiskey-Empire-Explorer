@@ -16,18 +16,25 @@ button { background: #6b351d; border: 2px solid #6b351d; color: #fff; cursor: po
 .status { margin: .75rem 0; }
 .warning, .error { border-left: 5px solid #a54100; font-weight: 700; padding: .5rem .75rem; }
 .error { border-color: #b00020; }
-.results-wrap { max-width: 100%; overflow-x: auto; }
+.results-wrap { max-width: 100%; }
 table { border-collapse: collapse; width: 100%; }
-th, td { border-bottom: 1px solid #baa99d; padding: .55rem; text-align: left; vertical-align: top; }
+.menu-list thead { clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px; }
+.menu-list tbody { display: block; }
+.menu-list tr { border-bottom: 1px solid #d6c9c0; display: grid; gap: .2rem .7rem; grid-template-columns: auto auto 1fr; padding: 1.15rem .25rem; }
+.menu-list td { border: 0; padding: 0; text-align: left; vertical-align: top; }
+.menu-list td[data-label="Name"] { font-size: 1.08rem; font-weight: 800; grid-column: 1 / -1; letter-spacing: .025em; text-transform: uppercase; }
+.item-type { font-style: italic; font-weight: 500; }
+.menu-list td[data-label="Distillery"], .menu-list td[data-label="Proof"] { color: #46372f; }
+.menu-list td[data-label="Distillery"]::before { content: "• "; margin-right: .35rem; }
+.menu-list td[data-label="Notes"] { color: #5f5149; grid-column: 1 / -1; }
+.menu-list td[data-label="Price"] { align-items: center; display: grid; font-weight: 700; gap: .55rem; grid-column: 1 / -1; grid-template-columns: auto 1fr auto; margin-top: .55rem; }
+.price-leader { border-bottom: 3px dotted #d6c9c0; min-width: 2rem; }
+.price-value { white-space: nowrap; }
 th button { background: transparent; border-color: transparent; color: #21150f; padding: .25rem; }
 .muted { color: #5f5149; }
 [hidden] { display: none !important; }
 @media (max-width: 700px) {
-  thead { display: none; }
-  tbody, tr, td { display: block; }
-  tr { border-bottom: 2px solid #5a2e1b; padding: .5rem 0; }
-  td { border: 0; padding: .2rem 0; }
-  td::before { content: attr(data-label) ": "; font-weight: 700; }
+  .menu-list tr { grid-template-columns: auto 1fr; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }

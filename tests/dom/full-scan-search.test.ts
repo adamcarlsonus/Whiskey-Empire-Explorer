@@ -20,8 +20,11 @@ test("injects one panel above source and renders safe searchable results", async
     assert.equal(panel.host.nextElementSibling, root);
     assert.equal(panel.body.textContent?.includes("<b>Safe Name</b>"), true);
     assert.equal(panel.body.querySelector("b"), null);
-    assert.deepEqual([...panel.shadow.querySelectorAll("th")].map((cell) => cell.textContent), ["Name", "Distillery", "Proof", "Price", "Notes"]);
-    assert.deepEqual([...panel.body.querySelectorAll("td")].map((cell) => cell.textContent), ["<b>Safe Name</b>", "anCnoc", "46% ABV", "$9", "—"]);
+    assert.deepEqual([...panel.shadow.querySelectorAll("th")].map((cell) => cell.textContent), ["Name", "Proof", "Distillery", "Notes", "Price"]);
+    assert.equal(panel.body.querySelector('[data-label="Name"]')?.textContent, "<b>Safe Name</b>");
+    assert.equal(panel.body.querySelector('[data-label="Proof"]')?.textContent, "46% ABV");
+    assert.equal(panel.body.querySelector('[data-label="Distillery"]')?.textContent, "anCnoc");
+    assert.equal(panel.body.querySelector(".price-value")?.textContent, "$9");
     assert.equal(isExtensionRequest({ type: "START_SCAN" }), true);
   } finally { restore(); }
 });
