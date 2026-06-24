@@ -65,6 +65,7 @@ scanButton?.addEventListener("click", async () => {
     await chrome.scripting.executeScript({ target: { tabId: activeTabId }, files: ["content.js"] });
     const response = await send({ type: "START_SCAN" });
     setStatus(response.ok ? snapshotText(response.snapshot) : response.error.message);
+    if (response.ok && !response.snapshot.error) window.close();
   } catch {
     setStatus("Chrome could not open the explorer on this page. No broader permission was requested.");
   } finally {

@@ -61,7 +61,7 @@ function createOrFocusPanel(): PanelView {
 async function start(): Promise<ExtensionResponse> {
   await activateWhiskeyTab(document);
   createOrFocusPanel();
-  await state.scanner.start(document, render);
+  void state.scanner.start(document, render);
   return { ok: true, snapshot: state.scanner.snapshot() };
 }
 

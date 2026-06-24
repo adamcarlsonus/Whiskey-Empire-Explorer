@@ -55,7 +55,10 @@ export function createPanel(before: Element, actions: PanelActions): PanelView {
   shadow.innerHTML = `<style>${panelStyles}</style>
     <section class="panel" aria-labelledby="wew-heading">
       <div class="header"><h2 id="wew-heading" tabindex="-1">Whiskey Empire Explorer</h2>
-        <div class="actions"><a class="original-link" href="#" id="wew-original">Original list</a><button class="secondary" id="wew-close" type="button">Close</button></div>
+        <div class="actions">
+          <a class="original-link nav-action" href="#" id="wew-original"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span>Original list</span></a>
+          <button class="secondary nav-action" id="wew-close" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg><span>Close</span></button>
+        </div>
       </div>
       <p id="wew-status" class="status" role="status" aria-live="polite">Preparing scan…</p>
       <p id="wew-warning" class="warning" hidden></p>
@@ -72,7 +75,7 @@ export function createPanel(before: Element, actions: PanelActions): PanelView {
           </div>
           <select class="native-sort" id="wew-sort" tabindex="-1" aria-hidden="true"><option value="source">Original order</option><option value="name-asc">Name A–Z</option><option value="price-asc">Price low–high</option><option value="price-desc">Price high–low</option></select>
         </div>
-        <button class="secondary" id="wew-reset" type="button">Reset</button>
+        <button class="secondary nav-action" id="wew-reset" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg><span>Reset</span></button>
       </div>
       <div class="actions"><button id="wew-cancel" type="button">Cancel scan</button><button id="wew-retry" type="button" hidden>Retry</button><button id="wew-continue" type="button" hidden>Continue with partial results</button></div>
       <p id="wew-count" aria-live="polite"></p>

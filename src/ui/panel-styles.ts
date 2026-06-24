@@ -41,6 +41,9 @@ button:hover { background: #d9d9d9; border-color: #d9d9d9; }
 .secondary { background: var(--wew-surface); border-color: var(--wew-border); color: var(--wew-text); }
 .secondary:hover { background: var(--wew-surface-hover); border-color: var(--wew-surface-hover); }
 .original-link { color: var(--wew-text); display: inline-flex; align-items: center; }
+.nav-action { align-items: center; background: transparent; border: 1px solid transparent; color: var(--wew-text); display: inline-flex; font-weight: 500; gap: .65rem; justify-content: flex-start; padding: .5rem .65rem; text-decoration: none; width: auto; }
+.nav-action:hover { background: var(--wew-surface); border-color: transparent; color: var(--wew-text); }
+.nav-action svg { fill: none; flex: 0 0 auto; height: 1.4rem; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; width: 1.4rem; }
 :focus-visible { outline: 3px solid var(--wew-focus); outline-offset: 2px; }
 .status { color: var(--wew-muted); margin: .85rem 0; }
 .warning, .error { background: #2b2118; border-left: 4px solid #f2a33c; border-radius: 6px; font-weight: 600; padding: .6rem .8rem; }
