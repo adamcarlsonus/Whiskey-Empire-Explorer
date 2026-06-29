@@ -57,7 +57,7 @@ styles. The manifest declares no `host_permissions`, `optional_host_permissions`
 or static `content_scripts`. The injected script validates the exact target URL before reading DOM or
 following validated pagination exposed by the active list.
 
-**Accessibility**: Semantic search, filter, sort, progress, status, table/list, retry, reset, and
+**Accessibility**: Semantic search, filter, sort, progress, status, table/list, rescan, reset, and
 close controls; complete keyboard operation; visible focus; live-region status without excessive
 announcements; sufficient contrast; reflow at 200% zoom; no required animation; focus moves to the
 panel heading on activation and returns predictably on close.

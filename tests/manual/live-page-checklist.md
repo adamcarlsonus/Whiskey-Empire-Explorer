@@ -40,8 +40,8 @@ package and completed the real action → popup → Scan → panel → search �
 
 - [ ] Inactive tab and wrong URL give guidance without broader permission.
 - [ ] Unsupported fixture leaves original content intact and shows no fabricated rows.
-- [ ] Failed middle page yields labeled partial results and Retry/Continue actions.
-- [ ] Cancel aborts collection; Retry starts a fresh attempt; page/entry limits stop safely.
+- [ ] Failed middle page yields labeled partial results and a Rescan action.
+- [ ] Cancel aborts collection; Rescan starts a fresh attempt; page/entry limits stop safely.
 - [ ] Cyclic and duplicate pagination URLs are not requested twice.
 
 ## Accessibility

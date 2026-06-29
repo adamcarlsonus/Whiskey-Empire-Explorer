@@ -61,7 +61,7 @@ Expected result:
 
 ## Validate accessibility
 
-1. Complete Scan, search, filter, sort, reset, retry, and close using only the keyboard.
+1. Complete Scan, search, filter, sort, reset, rescan, and close using only the keyboard.
 2. Confirm visible focus and sensible focus movement on panel open and close.
 3. At 200% zoom, confirm controls reflow and results remain readable.
 4. With a screen reader, confirm page progress, completion/failure, result counts, and sort state.
@@ -72,7 +72,7 @@ Expected result:
 - Scan from another drink tab: select Whiskey Empire automatically without scraping other sections.
 - Activate on another URL: popup disables Scan and requests no broader access.
 - Use the unsupported fixture: show a clear error and preserve the source page.
-- Simulate a failed middle page: retain labeled partial results and offer Retry.
+- Simulate a failed middle page: retain labeled partial results and offer Rescan in the header.
 - Simulate cyclic pagination and more than 20 pages: stop safely with a warning.
 - Click Scan repeatedly: focus the existing panel without duplicate requests or UI.
 

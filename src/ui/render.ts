@@ -101,10 +101,10 @@ export function updatePanel(view: PanelView, session: Readonly<CollectionSession
   }
   view.status.textContent = statusText(session);
   const terminalResults = session.status === "ready" || session.status === "partial";
+  const terminal = ["ready", "partial", "failed", "unsupported", "cancelled"].includes(session.status);
   view.controls.hidden = !terminalResults;
   view.cancel.hidden = !["validating", "scanning", "normalizing"].includes(session.status);
-  view.retry.hidden = !["partial", "failed", "unsupported", "cancelled"].includes(session.status);
-  view.continueButton.hidden = session.status !== "partial";
+  view.rescan.hidden = !terminal;
   view.warning.hidden = !session.warning && !session.error;
   view.warning.className = session.error ? "error" : "warning";
   view.warning.textContent = session.error?.message ?? session.warning?.message ?? "";

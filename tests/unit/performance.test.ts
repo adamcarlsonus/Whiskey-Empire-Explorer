@@ -26,7 +26,7 @@ test("one criteria update performs one batched results replacement", async () =>
   const restore = installDomGlobals(dom);
   try {
     const root = document.querySelector("[data-whiskey-empire-list]")!;
-    const panel = createPanel(root, { onCriteria() {}, onReset() {}, onCancel() {}, onRetry() {}, onContinue() {}, onClose() {} });
+    const panel = createPanel(root, { onCriteria() {}, onReset() {}, onCancel() {}, onRescan() {}, onClose() {} });
     let replacements = 0;
     const original = panel.body.replaceChildren.bind(panel.body);
     panel.body.replaceChildren = (...nodes: (Node | string)[]) => { replacements += 1; original(...nodes); };

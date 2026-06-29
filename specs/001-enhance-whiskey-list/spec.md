@@ -124,8 +124,8 @@ back to the original page.
    the enhancement, **Then** a clear unsupported-page message appears and original content is
    unchanged.
 2. **Given** one linked page fails during collection, **When** scanning ends, **Then** the visitor
-   is told the collection is incomplete and may retry or continue with clearly labeled partial
-   results.
+   is told the collection is incomplete, sees clearly labeled partial results, and may start a
+   fresh scan from the panel navigation.
 3. **Given** the enhanced view is open, **When** the visitor chooses the original-page link or
    close action, **Then** the restaurant's original list is available at its canonical location.
 
@@ -231,11 +231,11 @@ back to the original page.
   and reachable below the panel. Each result MUST also offer an explicit Google Search link using
   only its displayed name and type, opening in a new tab with opener and referrer isolation.
 - **FR-015**: If the page is unsupported, collection is incomplete, or no reliable entries can be
-  extracted, the product MUST show a clear error or warning with an appropriate retry, partial-results,
-  or return-to-original action. Wrong URL and inactive tab offer guidance and Close; unsupported
+  extracted, the product MUST show a clear error or warning with appropriate rescan and
+  return-to-original actions. Wrong URL and inactive tab offer guidance and Close; unsupported
   structure and zero valid entries offer Close and original-page access; request/parse failures offer
-  Retry; a failed middle page or safety limit retains labeled partial results and offers Retry, Continue
-  with Partial Results, Close, and original-page access.
+  Rescan; a failed middle page or safety limit retains labeled partial results and offers Rescan,
+  Close, and original-page access without a separate continue action.
 - **FR-016**: A collection or rendering failure MUST NOT remove, corrupt, or prevent use of the
   restaurant's original page.
 - **FR-017**: Added controls and status messages MUST support keyboard use, visible focus, semantic
@@ -263,7 +263,7 @@ back to the original page.
   produces labeled partial results; SC-001's completeness guarantee applies only within both limits.
 - **FR-023**: A session MUST follow `idle -> validating -> scanning -> normalizing -> ready`, with
   terminal alternatives `partial`, `failed`, `unsupported`, or `cancelled`. Cancel aborts the active
-  request and starts no new requests. Retry creates a fresh attempt and clears stale results; repeated
+  request and starts no new requests. Rescan creates a fresh attempt and clears stale results; repeated
   Start while scanning or ready focuses and reports the existing session without duplicate requests.
 - **FR-024**: The popup MUST provide target guidance, Scan/Focus Panel, compact aggregate status, and
   privacy copy; it MUST NOT contain whiskey results. The inline panel MUST remain authoritative for

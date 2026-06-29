@@ -7,8 +7,7 @@ export interface PanelActions {
   onCriteria: (criteria: ViewCriteria) => void;
   onReset: () => void;
   onCancel: () => void;
-  onRetry: () => void;
-  onContinue: () => void;
+  onRescan: () => void;
   onClose: () => void;
 }
 
@@ -29,9 +28,8 @@ export interface PanelView {
   sortValue: HTMLElement;
   sortList: HTMLElement;
   reset: HTMLButtonElement;
+  rescan: HTMLButtonElement;
   cancel: HTMLButtonElement;
-  retry: HTMLButtonElement;
-  continueButton: HTMLButtonElement;
   close: HTMLButtonElement;
   count: HTMLElement;
   body: HTMLTableSectionElement;
@@ -57,6 +55,7 @@ export function createPanel(before: Element, actions: PanelActions): PanelView {
     <section class="panel" aria-labelledby="wew-heading">
       <div class="header"><h2 id="wew-heading" tabindex="-1">Whiskey Empire Explorer</h2>
         <div class="actions">
+          <button class="secondary nav-action" id="wew-rescan" type="button" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg><span>Rescan</span></button>
           <a class="original-link nav-action" href="#" id="wew-original"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span>Original list</span></a>
           <button class="secondary nav-action" id="wew-close" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg><span>Close</span></button>
         </div>
@@ -81,7 +80,7 @@ export function createPanel(before: Element, actions: PanelActions): PanelView {
         </div>
         <button class="secondary nav-action" id="wew-reset" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg><span>Reset</span></button>
       </div>
-      <div class="actions"><button id="wew-cancel" type="button">Cancel scan</button><button id="wew-retry" type="button" hidden>Retry</button><button id="wew-continue" type="button" hidden>Continue with partial results</button></div>
+      <div class="actions"><button id="wew-cancel" type="button">Cancel scan</button></div>
       <p id="wew-count" aria-live="polite"></p>
       <div class="results-wrap"><table class="menu-list" hidden id="wew-table"><thead><tr><th id="wew-name-head" scope="col">Name</th><th scope="col">Proof</th><th scope="col">Distillery</th><th scope="col">Notes</th><th scope="col">Search</th><th id="wew-price-head" scope="col">Price</th></tr></thead><tbody id="wew-body"></tbody></table></div>
     </section>`;
@@ -98,8 +97,8 @@ export function createPanel(before: Element, actions: PanelActions): PanelView {
     distillery: required("#wew-distillery"), distilleryList: required("#wew-distillery-list"),
     sort: required("#wew-sort"), sortField: required("#wew-sort-field"), sortButton: required("#wew-sort-button"),
     sortValue: required("#wew-sort-value"), sortList: required("#wew-sort-list"),
-    reset: required("#wew-reset"), cancel: required("#wew-cancel"),
-    retry: required("#wew-retry"), continueButton: required("#wew-continue"), close: required("#wew-close"),
+    reset: required("#wew-reset"), rescan: required("#wew-rescan"), cancel: required("#wew-cancel"),
+    close: required("#wew-close"),
     count: required("#wew-count"), body: required("#wew-body"), nameHeader: required("#wew-name-head"), priceHeader: required("#wew-price-head")
   };
   required<HTMLAnchorElement>("#wew-original").href = window.location.href;
@@ -215,10 +214,9 @@ export function createPanel(before: Element, actions: PanelActions): PanelView {
   view.sortField.addEventListener("focusout", () => setTimeout(() => {
     if (!view.sortField.contains(view.shadow.activeElement)) closeSort();
   }, 0));
+  view.rescan.addEventListener("click", actions.onRescan);
   view.reset.addEventListener("click", actions.onReset);
   view.cancel.addEventListener("click", actions.onCancel);
-  view.retry.addEventListener("click", actions.onRetry);
-  view.continueButton.addEventListener("click", actions.onContinue);
   view.close.addEventListener("click", actions.onClose);
   required<HTMLAnchorElement>("#wew-original").addEventListener("click", (event) => {
     event.preventDefault();

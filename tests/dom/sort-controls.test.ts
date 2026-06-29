@@ -11,7 +11,7 @@ test("exposes sort state and non-comparable price text", async () => {
   try {
     const root = document.querySelector("[data-whiskey-empire-list]")!;
     let selectedCriteria: ViewCriteria | null = null;
-    const panel = createPanel(root, { onCriteria(criteria) { selectedCriteria = criteria; }, onReset() {}, onCancel() {}, onRetry() {}, onContinue() {}, onClose() {} });
+    const panel = createPanel(root, { onCriteria(criteria) { selectedCriteria = criteria; }, onReset() {}, onCancel() {}, onRescan() {}, onClose() {} });
     const session = { sessionId: "x", status: "ready", pages: [], skippedCandidates: 0, startedAt: 0, completedAt: 1, warning: null, error: null, entries: [{ id: "1", sourceOrder: 0, name: "Range", normalizedName: "range", displayPrice: "$8-$12", sortablePriceCents: null, category: null, normalizedCategory: null, distillery: null, type: null, region: null, proof: null, notes: null, searchText: "range", source: { pageUrl: dom.window.location.href, rowIndex: 0, sourceHref: null } }] } satisfies CollectionSession;
     updatePanel(panel, session, { query: "", distillery: null, sort: "price-desc" });
     assert.equal(panel.priceHeader.getAttribute("aria-sort"), "descending");

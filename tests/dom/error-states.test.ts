@@ -10,13 +10,15 @@ test("presents unsupported and partial states without fabricated rows", async ()
   const restore = installDomGlobals(dom);
   try {
     const root = document.querySelector("[data-whiskey-empire-list]")!;
-    const panel = createPanel(root, { onCriteria() {}, onReset() {}, onCancel() {}, onRetry() {}, onContinue() {}, onClose() {} });
+    const panel = createPanel(root, { onCriteria() {}, onReset() {}, onCancel() {}, onRescan() {}, onClose() {} });
     const unsupported: CollectionSession = { sessionId: "x", status: "unsupported", pages: [], entries: [], skippedCandidates: 0, startedAt: 0, completedAt: 1, warning: null, error: { code: "UNSUPPORTED_STRUCTURE", message: "Unsupported page." } };
     updatePanel(panel, unsupported, { query: "", distillery: null, sort: "source" });
-    assert.equal(panel.retry.hidden, false);
+    assert.equal(panel.rescan.hidden, false);
     assert.equal(panel.body.childElementCount, 0);
     assert.equal(panel.warning.textContent, "Unsupported page.");
     updatePanel(panel, { ...unsupported, status: "partial", error: null, warning: { code: "PARTIAL_RESULTS", message: "Partial." } }, { query: "", distillery: null, sort: "source" });
-    assert.equal(panel.continueButton.hidden, false);
+    assert.equal(panel.rescan.hidden, false);
+    assert.equal(panel.shadow.querySelector("#wew-retry"), null);
+    assert.equal(panel.shadow.querySelector("#wew-continue"), null);
   } finally { restore(); }
 });

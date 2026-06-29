@@ -41,8 +41,7 @@ function createOrFocusPanel(): PanelView {
       render(state.scanner.current);
     },
     onCancel: () => state.scanner.cancel(render),
-    onRetry: () => { state.scanner.reset(); void start(); },
-    onContinue: () => state.scanner.continuePartial(render),
+    onRescan: () => { state.scanner.reset(); void start(); },
     onClose: () => {
       state.scanner.cancel();
       state.scanner.reset();

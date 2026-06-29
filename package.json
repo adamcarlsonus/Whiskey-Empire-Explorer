@@ -10,6 +10,7 @@
     "test:harness": "node --test tests/e2e/support/*.test.mjs",
     "test": "npm run test:compile && node --test build-tests/tests/unit/*.test.js build-tests/tests/dom/*.test.js && npm run test:harness",
     "e2e:install": "playwright install chromium",
+    "store:assets": "node scripts/create-store-assets.mjs",
     "test:e2e:live": "npm run build && node tests/e2e/live-extension.mjs",
     "validate": "npm run typecheck && npm test && npm run build"
   },

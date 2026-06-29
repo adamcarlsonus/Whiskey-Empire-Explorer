@@ -71,7 +71,7 @@ and implementation-ready across navigation, data handling, privacy, accessibilit
 - [x] CHK020 Are progress requirements complete for known totals, unknown totals, newly discovered
   pages, skipped candidates, partial completion, and terminal status? [Coverage, Spec §FR-004,
   Spec §SC-005]
-- [x] CHK021 Are retry and cancellation semantics defined for an in-progress request, a failed middle
+- [x] CHK021 Are rescan and cancellation semantics defined for an in-progress request, a failed middle
   page, already collected entries, and repeated activation? [Gap, Spec §User Story 4,
   Spec §FR-015]
 - [x] CHK022 Are requirements present for rate limiting, access denial, source changes during a
@@ -114,7 +114,7 @@ and implementation-ready across navigation, data handling, privacy, accessibilit
 ## Accessibility Requirements
 
 - [x] CHK033 Are keyboard requirements specified for every popup and panel control, results navigation,
-  retry, cancellation, reset, original-page access, and close? [Coverage, Spec §FR-017]
+  rescan, cancellation, reset, original-page access, and close? [Coverage, Spec §FR-017]
 - [x] CHK034 Are initial focus, repeated activation, dynamic updates, error recovery, and close-focus
   destinations defined without relying on "predictable" or similar subjective language? [Clarity,
   Spec §FR-017, Plan §Accessibility]

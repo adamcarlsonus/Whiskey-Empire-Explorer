@@ -7,7 +7,7 @@ test("panel controls have native semantics, names, focus, live status, and reduc
   const dom = await loadFixture("whiskey-page-1.html");
   const restore = installDomGlobals(dom);
   try {
-    const panel = createPanel(document.querySelector("[data-whiskey-empire-list]")!, { onCriteria() {}, onReset() {}, onCancel() {}, onRetry() {}, onContinue() {}, onClose() {} });
+    const panel = createPanel(document.querySelector("[data-whiskey-empire-list]")!, { onCriteria() {}, onReset() {}, onCancel() {}, onRescan() {}, onClose() {} });
     await Promise.resolve();
     assert.equal(panel.shadow.activeElement, panel.heading);
     assert.equal(panel.status.getAttribute("aria-live"), "polite");
@@ -16,7 +16,7 @@ test("panel controls have native semantics, names, focus, live status, and reduc
     assert.equal(panel.sortButton.getAttribute("aria-controls"), "wew-sort-list");
     assert.equal(panel.sortList.getAttribute("role"), "listbox");
     const navigationActions = [...panel.shadow.querySelectorAll<HTMLElement>(".nav-action")];
-    assert.deepEqual(navigationActions.map((action) => action.textContent?.trim()), ["Original list", "Close", "Reset"]);
+    assert.deepEqual(navigationActions.map((action) => action.textContent?.trim()), ["Rescan", "Original list", "Close", "Reset"]);
     assert.equal(navigationActions.every((action) => action.querySelector("svg")?.getAttribute("aria-hidden") === "true"), true);
     assert.equal(panel.shadow.querySelectorAll("button").length >= 5, true);
     assert.match(panel.shadow.querySelector("style")?.textContent ?? "", /prefers-reduced-motion/);

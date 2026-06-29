@@ -24,10 +24,10 @@ Panel states:
 |-------|-------------|
 | Validating/scanning | Heading, determinate counts when known, live status, Cancel, original-page link. |
 | Ready | Search, optional searchable distillery combobox, sort control/columns, result count, Reset, Close, results. |
-| Partial | Ready UI plus persistent warning and Retry. |
+| Partial | Ready UI plus persistent warning and Rescan in the header navigation. |
 | Empty search | Controls plus no-results message and Clear Search. |
-| Unsupported/failed | Clear reason, Retry when meaningful, Close, original-page link; no fabricated rows. |
-| Cancelled | Cancellation status, collected-data policy, Retry, Close. |
+| Unsupported/failed | Clear reason, Rescan when meaningful, Close, original-page link; no fabricated rows. |
+| Cancelled | Cancellation status, collected-data policy, Rescan, Close. |
 
 Error/action mapping:
 
@@ -35,16 +35,16 @@ Error/action mapping:
 |---------|-------------------|
 | Wrong URL or Whiskey Empire activation failure | Guidance and Close |
 | Unsupported structure or zero valid entries | Original Page and Close |
-| Initial request/parse failure | Retry, Original Page, and Close |
-| Failed middle page or safety limit | Retry, Continue with Partial Results, Original Page, and Close |
-| Cancelled | Retry, Original Page, and Close |
+| Initial request/parse failure | Rescan, Original Page, and Close |
+| Failed middle page or safety limit | Rescan, Original Page, and Close |
+| Cancelled | Rescan, Original Page, and Close |
 
 ## Accessibility invariants
 
 - All controls use native elements and accessible names.
 - The panel heading receives programmatic focus after first injection; visible focus is never removed.
 - Repeated activation focuses the existing panel heading. Progress, results, criteria, warning, and
-  error updates never move focus automatically. Retry focuses the panel heading when the new attempt
+  error updates never move focus automatically. Rescan focuses the panel heading when the new attempt
   begins; Close returns focus to the restaurant list heading or page body.
 - Status changes use a polite live region; page-level progress is announced no more than once per page.
 - Unknown-total progress states processed and discovered page counts; all progress states include

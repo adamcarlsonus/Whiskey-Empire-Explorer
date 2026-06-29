@@ -13,7 +13,7 @@ test("injects one panel above source and renders safe searchable results", async
   try {
     const root = dom.window.document.querySelector("[data-whiskey-empire-list]")!;
     const normalized = normalizeRecords([{ rawName: "<b>Safe Name</b> #BOU Bourbon", rawPrice: "$9", rawDistillery: "anCnoc", rawType: "#BOU Bourbon", rawProof: "46% ABV", allVisibleText: "Safe Name #BOU Bourbon anCnoc 46% ABV Kentucky", sourcePageUrl: dom.window.location.href, sourceRowIndex: 0 }]);
-    const panel = createPanel(root, { onCriteria() {}, onReset() {}, onCancel() {}, onRetry() {}, onContinue() {}, onClose() {} });
+    const panel = createPanel(root, { onCriteria() {}, onReset() {}, onCancel() {}, onRescan() {}, onClose() {} });
     const session: CollectionSession = { sessionId: "test", status: "ready", pages: [], entries: normalized.entries, skippedCandidates: 0, startedAt: 0, completedAt: 1, warning: null, error: null };
     updatePanel(panel, session, { query: "safe", distillery: null, sort: "source" });
     assert.equal(dom.window.document.querySelectorAll(`#${PANEL_HOST_ID}`).length, 1);

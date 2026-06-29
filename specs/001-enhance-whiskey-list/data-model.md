@@ -69,7 +69,7 @@ Tracks one discovered pagination page.
 | `errorCode` | ScanErrorCode \| null | yes | Set only for `failed`. |
 
 State transitions: `discovered -> loading -> parsed`; a request or parse problem yields
-`loading -> failed`. A session-level Retry creates a new attempt rather than mutating a terminal page.
+`loading -> failed`. A session-level Rescan creates a new attempt rather than mutating a terminal page.
 
 ## CollectionSession
 
@@ -93,7 +93,7 @@ idle -> validating -> scanning -> normalizing -> ready
                     |           -> failed
                     -> unsupported
 scanning -> cancelled
-ready | partial | failed | unsupported | cancelled -> validating (explicit Retry)
+ready | partial | failed | unsupported | cancelled -> validating (explicit Rescan)
 ```
 
 Only one session may scan per tab. Repeated Start commands return the current snapshot.
@@ -113,6 +113,6 @@ order. Reset restores empty query, no category, and source order.
 ## ScanError and ScanWarning
 
 `ScanErrorCode` is one of `WRONG_URL`, `TAB_NOT_ACTIVE`, `UNSUPPORTED_STRUCTURE`, `REQUEST_FAILED`,
-`PARSE_FAILED`, or `NO_VALID_ENTRIES`. Each error maps to safe user-facing copy and a Retry or Close
+`PARSE_FAILED`, or `NO_VALID_ENTRIES`. Each error maps to safe user-facing copy and a Rescan or Close
 action. `ScanWarning` covers `PARTIAL_RESULTS`, `PAGE_LIMIT_REACHED`, and `SKIPPED_CANDIDATES` without
 hiding valid entries.
