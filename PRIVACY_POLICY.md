@@ -95,7 +95,3 @@ from children.
 This policy may be updated if the extension's functionality changes. Any material change to data
 handling should be reflected in this policy and in the Chrome Web Store privacy disclosures.
 
-## Contact
-
-For privacy questions, contact: [replace with your support email or support URL before publishing].
-
