@@ -1,4 +1,4 @@
-import { isSupportedUrl } from "../shared/target.js";
+import { isSupportedUrl, SUPPORTED_URL } from "../shared/target.js";
 import type { ExtensionRequest, ExtensionResponse, SessionSnapshot } from "../shared/messages.js";
 
 const scanButton = document.querySelector<HTMLButtonElement>("#scan");
@@ -6,6 +6,7 @@ const guidance = document.querySelector<HTMLElement>("#guidance");
 const status = document.querySelector<HTMLElement>("#status");
 let activeTabId: number | null = null;
 let pollId: number | null = null;
+let supportedPage = false;
 
 function setStatus(message: string): void { if (status) status.textContent = message; }
 
@@ -45,8 +46,9 @@ async function initialize(): Promise<void> {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     activeTabId = tab?.id ?? null;
     const supported = Boolean(tab?.url && isSupportedUrl(tab.url));
-    if (scanButton) scanButton.disabled = !supported;
-    if (guidance) guidance.textContent = supported ? "Scan will open the Whiskey Empire collection automatically." : "Open the Westside drink menu to use this extension.";
+    supportedPage = supported;
+    if (scanButton) { scanButton.disabled = false; scanButton.textContent = supported ? "Scan whiskey list" : "Open whiskey menu"; }
+    if (guidance) guidance.textContent = supported ? "Scan will open the Whiskey Empire collection automatically." : "Open the menu, then click this extension again to scan Whiskey Empire.";
     if (supported) {
       await poll();
       pollId = window.setInterval(() => void poll(), 750);
@@ -58,6 +60,11 @@ async function initialize(): Promise<void> {
 }
 
 scanButton?.addEventListener("click", async () => {
+  if (!supportedPage) {
+    await chrome.tabs.create({ url: SUPPORTED_URL });
+    window.close();
+    return;
+  }
   if (activeTabId === null) return;
   scanButton.disabled = true;
   setStatus("Opening the explorer…");

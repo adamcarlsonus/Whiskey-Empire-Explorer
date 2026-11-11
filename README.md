@@ -3,6 +3,17 @@
 A privacy-first Chrome Manifest V3 extension that opens the Whiskey Empire collection and adds
 full-list search, price/name sorting, and searchable distillery filtering to the Westside BloNo menu.
 
+## Menu availability and VPNs
+
+The restaurant's menu is provided by Untappd, which may block some VPN connections. If the menu
+is missing or a scan cannot load later pages, try pausing your VPN or configuring it to allow this
+site outside the VPN. Reload the restaurant page, wait for the original whiskey menu to appear,
+then scan again. Network outages and menu changes can cause similar failures; the extension
+does not detect VPN use or change your network settings.
+
+The extension popup includes this guidance, and a missing-menu scan shows it in the panel with
+the existing Rescan action. Partial results remain available if a later page cannot be read.
+
 ## Privacy and permissions
 
 - Uses only `activeTab` and `scripting` after an explicit extension action and popup Scan.
@@ -38,6 +49,18 @@ Whiskey Empire automatically and collected all 1,261 advertised entries, with li
 `price-desc`, descending `aria-sort`, unchanged permissions, and successful cleanup.
 
 ## Install locally
+
+When opened on another page, choose **Open whiskey menu**, then click the extension again and
+choose **Scan whiskey list**. Chrome requires that second click to grant temporary `activeTab`
+access on the newly opened page. No additional permissions are needed. Scan selects the exact
+**Whiskey Empire** tab, avoiding **Whiskey Empire Cocktail Menu**, and waits briefly for tabs to load.
+
+If the restaurant menu does not appear at all, its Untappd provider may be unavailable or blocking
+requests. Reload and wait until the original menu is visible before scanning.
+
+The scanner resolves the selected tab's linked panel and matches **Whiskey Empire** headings
+exactly, so the cocktail panel is excluded. After reloading an unpacked extension, refresh the
+restaurant page as well to discard the previously injected scanner and its cached results.
 
 1. Run `npm run build`.
 2. Open `chrome://extensions` and enable Developer mode.

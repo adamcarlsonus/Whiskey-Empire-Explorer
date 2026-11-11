@@ -88,7 +88,7 @@ export async function traversePagination(options: TraversalOptions): Promise<Tra
       page.state = "failed";
       page.errorCode = code;
       if (rawRecords.length === 0) throw scanError(code, error instanceof Error ? error.message : "Unable to read the whiskey list.");
-      warning = { code: "PARTIAL_RESULTS", message: "A later page could not be read. Results are incomplete." };
+      warning = { code: "PARTIAL_RESULTS", message: "A later page could not be read. Results are incomplete. Untappd may block some VPN connections. If you use a VPN, try pausing it or allowing this site outside the VPN, then reload the page and scan again." };
       options.onProgress?.({ pages: [...pages], records: rawRecords.length, skippedCandidates });
       break;
     }

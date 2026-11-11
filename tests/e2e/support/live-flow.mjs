@@ -50,7 +50,7 @@ export async function observeWhiskeyTab(page) {
   let visible = [];
   while (Date.now() < deadline && visible.length === 0) {
     for (const frame of page.frames()) {
-      const candidates = frame.locator(".ut-menu .tab-anchor[data-tab-id]").filter({ hasText: /Whiskey\s+Empire/i });
+      const candidates = frame.locator(".ut-menu .tab-anchor[data-tab-id]").filter({ hasText: /^\s*Whiskey\s+Empire\s*$/i });
       for (let index = 0; index < await candidates.count(); index += 1) {
         const candidate = candidates.nth(index);
         if (await candidate.isVisible().catch(() => false)) visible.push({ frame, candidate });
@@ -64,7 +64,7 @@ export async function observeWhiskeyTab(page) {
     if (!await menu.count()) continue;
     const selected = await candidate.evaluate((element) => element.getAttribute("aria-selected") === "true" || /(^|\s)(active|selected|et_pb_tab_active)(\s|$)/i.test(element.className));
     const whiskeyPanel = menu.locator(".tab-content")
-      .filter({ hasText: /Whiskey\s+Empire/i })
+      .filter({ has: frame.locator('.menu-title').filter({ hasText: /^\s*Whiskey\s+Empire\s*$/i }) })
       .filter({ hasText: /Displaying items\s+\d+\s*-\s*\d+\s+of\s+[\d,]+\s+in total/i })
       .first();
     const advertisedTotal = parseAdvertisedTotal(await whiskeyPanel.textContent());
@@ -81,7 +81,7 @@ export async function observeWhiskeyTab(page) {
 
 export async function assertWhiskeyTabSelected(page) {
   for (const frame of page.frames()) {
-    const candidates = frame.locator(".ut-menu .tab-anchor[data-tab-id]").filter({ hasText: /Whiskey\s+Empire/i });
+    const candidates = frame.locator(".ut-menu .tab-anchor[data-tab-id]").filter({ hasText: /^\s*Whiskey\s+Empire\s*$/i });
     for (let index = 0; index < await candidates.count(); index += 1) {
       const candidate = candidates.nth(index);
       if (!await candidate.isVisible().catch(() => false)) continue;

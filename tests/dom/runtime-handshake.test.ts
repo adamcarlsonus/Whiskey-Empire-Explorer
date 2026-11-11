@@ -21,7 +21,8 @@ test("START_SCAN acknowledges immediately and later shows an explicit error for 
     await new Promise((resolve) => setTimeout(resolve, 0));
     const host = document.getElementById(PANEL_HOST_ID);
     assert.ok(host?.shadowRoot);
-    assert.match(host.shadowRoot.querySelector("[role=status]")?.textContent ?? "", /not supported/i);
+    assert.match(host.shadowRoot.querySelector("[role=status]")?.textContent ?? "", /Menu unavailable/i);
+    assert.match(host.shadowRoot.querySelector("#wew-warning")?.textContent ?? "", /not supported/i);
   } finally {
     if (previousChrome === undefined) Reflect.deleteProperty(globalThis, "chrome"); else Reflect.set(globalThis, "chrome", previousChrome);
     restore();

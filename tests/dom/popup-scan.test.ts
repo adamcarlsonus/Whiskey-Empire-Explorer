@@ -4,6 +4,38 @@ import { readFile } from "node:fs/promises";
 import { JSDOM } from "jsdom";
 import { installDomGlobals } from "../helpers/dom.js";
 
+test("popup opens the menu from another page without injecting or adding permissions", async () => {
+  const dom = new JSDOM(await readFile("src/popup/popup.html", "utf8"), { url: "chrome-extension://test/popup/popup.html" });
+  const restore = installDomGlobals(dom);
+  const previousChrome = Reflect.get(globalThis, "chrome");
+  const opened: string[] = [];
+  let closed = false;
+  dom.window.close = () => { closed = true; };
+  Reflect.set(globalThis, "chrome", {
+    tabs: {
+      query: async () => [{ id: 9, url: "https://example.org/" }],
+      create: async ({ url }: { url: string }) => { opened.push(url); }
+    },
+    scripting: { executeScript: () => { assert.fail("Must not inject on another site"); } }
+  });
+  try {
+    const modulePath = "../../src/popup/popup.js?navigation";
+    await import(modulePath);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    const button = document.querySelector<HTMLButtonElement>("#scan")!;
+    assert.equal(button.disabled, false);
+    assert.equal(button.textContent, "Open whiskey menu");
+    button.click();
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.deepEqual(opened, ["https://thewestsideblono.com/drink/drink-menu/"]);
+    assert.equal(closed, true);
+  } finally {
+    dom.window.dispatchEvent(new dom.window.Event("unload"));
+    if (previousChrome === undefined) Reflect.deleteProperty(globalThis, "chrome"); else Reflect.set(globalThis, "chrome", previousChrome);
+    restore();
+  }
+});
+
 test("popup injects content, starts the scan, and closes after a successful handoff", async () => {
   const html = await readFile("src/popup/popup.html", "utf8");
   const dom = new JSDOM(html, { url: "chrome-extension://test/popup/popup.html", pretendToBeVisual: true });

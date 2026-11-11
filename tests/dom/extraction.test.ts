@@ -6,6 +6,31 @@ import { loadFixture } from "../helpers/dom.js";
 
 const url = "https://thewestsideblono.com/drink/drink-menu/?page=1";
 
+for (const linked of [true, false]) {
+  test(`reads whiskey rows and pagination when cocktails precede them (linked=${linked})`, async () => {
+    const dom = await loadFixture("whiskey-untappd.html", url);
+    const doc = dom.window.document;
+    const panel = doc.querySelector<HTMLElement>('.tab-content')!;
+    panel.id = linked ? 'menu-226060' : 'unlinked-whiskey';
+    const cocktails = panel.cloneNode(true) as HTMLElement;
+    cocktails.id = 'cocktails';
+    cocktails.querySelector('.menu-title')!.textContent = 'Whiskey Empire Cocktail Menu';
+    cocktails.querySelector('.item-name')!.textContent = 'SCOTCH-A-RITA';
+    panel.before(cocktails);
+    const total = doc.createElement('p');
+    total.textContent = 'Displaying items 1 - 100 of 1261 in total';
+    const nav = doc.createElement('nav');
+    nav.innerHTML = '<a href="https://business.untappd.com/locations/27679/themes/106302/items?page=2&section_id=1804729">Next</a>';
+    panel.append(total, nav);
+    const result = extractPage(doc, url);
+    assert.equal(locateActiveList(doc).ok, true);
+    assert.deepEqual(result.records.map(row => row.rawName), ['Fixture Reserve Bourbon']);
+    assert.equal(result.advertisedTotal, 1261);
+    assert.equal(result.paginationUrls.length, 1);
+    assert.equal(result.paginationUrls[0]?.searchParams.get('page'), '2');
+  });
+}
+
 test("extracts valid rows, optional visible fields, categories, and pagination", async () => {
   const dom = await loadFixture("whiskey-page-1.html", url);
   const result = extractPage(dom.window.document, url);

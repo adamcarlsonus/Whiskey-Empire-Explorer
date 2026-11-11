@@ -51,8 +51,8 @@ button:hover { background: #d9d9d9; border-color: #d9d9d9; }
 :focus-visible { outline: 3px solid var(--wew-focus); outline-offset: 2px; }
 h2:focus-visible { outline: none; }
 .status { color: var(--wew-muted); margin: .85rem 0; }
-.warning, .error { background: #2b2118; border-left: 4px solid #f2a33c; border-radius: 6px; font-weight: 600; padding: .6rem .8rem; }
-.error { background: #2d1719; border-color: #ff6b72; }
+.warning, .error { background: #2b2118; border-left: 4px solid #f2a33c; border-radius: 6px; color: var(--wew-text); font-size: 20px; line-height: 1.6; font-weight: 600; padding: .8rem 1rem; }
+.error { background: #eee5d8; border-color: #80551f; color: #30281e; }
 .results-wrap { max-width: 100%; }
 table { border-collapse: collapse; width: 100%; }
 .menu-list thead { clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px; }

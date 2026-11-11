@@ -88,7 +88,9 @@ function statusText(session: Readonly<CollectionSession>): string {
   if (session.status === "ready") return `Scan complete: ${session.entries.length} entries.`;
   if (session.status === "partial") return `Partial scan complete: ${session.entries.length} entries.`;
   if (session.status === "cancelled") return "Scan cancelled. Temporary results were discarded.";
-  return session.error?.message ?? "Ready.";
+  if (session.status === "unsupported") return "Menu unavailable for scanning.";
+  if (session.status === "failed") return "Scan could not be completed.";
+  return "Ready.";
 }
 
 export function updatePanel(view: PanelView, session: Readonly<CollectionSession>, criteria: Readonly<ViewCriteria>): void {

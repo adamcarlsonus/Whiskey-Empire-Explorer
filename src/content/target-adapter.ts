@@ -27,7 +27,7 @@ function textFrom(root: Element, selectors: readonly string[]): string {
 }
 
 function isWhiskeyTab(element: Element): boolean {
-  return /whiskey\s+empire/i.test(element.textContent ?? "");
+  return /^whiskey\s+empire$/i.test(element.textContent?.trim() ?? "");
 }
 
 function isSelectedTab(element: Element): boolean {
@@ -39,21 +39,26 @@ function findTabRoot(document: Document): Element | null {
   const explicit = document.querySelector("[data-whiskey-empire-list]");
   const tabs = [...document.querySelectorAll(TAB_SELECTORS)];
   const whiskeyTabs = tabs.filter((tab) => isWhiskeyTab(tab));
-  const whiskeyTab = whiskeyTabs.find((tab) => isSelectedTab(tab) && /whiskey\s+empire/i.test(tab.closest(".ut-menu")?.querySelector(".menu-title")?.textContent ?? ""))
-    ?? whiskeyTabs.find((tab) => isSelectedTab(tab))
+  const whiskeyTab = whiskeyTabs.find((tab) => isSelectedTab(tab))
     ?? whiskeyTabs[0];
   if (whiskeyTab && !isSelectedTab(whiskeyTab)) return null;
   if (explicit) return explicit;
   if (!whiskeyTab) return null;
 
-  const target = whiskeyTab.getAttribute("aria-controls") ?? whiskeyTab.getAttribute("data-target") ?? whiskeyTab.getAttribute("href")?.replace(/^#/, "");
+  const target = whiskeyTab.getAttribute("aria-controls") ?? whiskeyTab.getAttribute("data-target") ?? whiskeyTab.getAttribute("data-tab-id") ?? whiskeyTab.getAttribute("href")?.replace(/^#/, "");
   if (target) {
     const controlled = document.getElementById(target.replace(/^#/, ""));
-    if (controlled) return controlled;
+    if (controlled) {
+      const title = controlled.querySelector('.menu-title');
+      if (!title || isWhiskeyTab(title)) return controlled;
+    }
   }
   const untappdMenu = whiskeyTab.closest(".ut-menu");
   const untappdPanel = untappdMenu
-    ? [...untappdMenu.querySelectorAll(".tab-content")].find((panel) => /whiskey\s+empire/i.test(panel.querySelector(".menu-title")?.textContent ?? "")) ?? null
+    ? [...untappdMenu.querySelectorAll(".tab-content")].find((panel) => {
+        const title = panel.querySelector(".menu-title");
+        return title !== null && isWhiskeyTab(title);
+      }) ?? null
     : null;
   return untappdPanel
     ?? whiskeyTab.closest(".tabs, .et_pb_tabs")?.querySelector('.et_pb_tab_active, [role="tabpanel"]')
@@ -62,13 +67,16 @@ function findTabRoot(document: Document): Element | null {
 
 export async function activateWhiskeyTab(document: Document, timeoutMs = 5_000): Promise<boolean> {
   if (!isSupportedUrl(document.location?.href ?? "") || locateActiveList(document).ok) return locateActiveList(document).ok;
-  const tab = [...document.querySelectorAll<HTMLElement>(TAB_SELECTORS)].find((candidate) => isWhiskeyTab(candidate));
-  if (!tab) return false;
-  if (isSelectedTab(tab)) return true;
-  tab.click();
+  // Cross-origin embedded menus cannot be read with activeTab access.
+  const selected = [...document.querySelectorAll(TAB_SELECTORS)].find(tab => isWhiskeyTab(tab) && isSelectedTab(tab));
+  const controlled = selected?.getAttribute('aria-controls');
+  if (controlled && document.getElementById(controlled)?.querySelector('iframe')) return false;
   const deadline = Date.now() + timeoutMs;
+  let clicked: HTMLElement | null = null;
   while (Date.now() < deadline) {
     if (locateActiveList(document).ok) return true;
+    const tab = [...document.querySelectorAll<HTMLElement>(TAB_SELECTORS)].find(isWhiskeyTab);
+    if (tab && tab !== clicked && !isSelectedTab(tab)) { tab.click(); clicked = tab; }
     await new Promise((resolve) => setTimeout(resolve, 50));
   }
   return locateActiveList(document).ok;

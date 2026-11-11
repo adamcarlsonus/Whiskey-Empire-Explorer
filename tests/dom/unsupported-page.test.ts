@@ -27,3 +27,23 @@ test("activates the Whiskey Empire tab before scanning", async () => {
   assert.equal(tab.getAttribute("aria-selected"), "true");
   assert.equal(locateActiveList(dom.window.document).ok, true);
 });
+
+test("ignores the cocktail tab and waits for the whiskey tab to load", async () => {
+  const dom = await loadFixture("whiskey-page-1.html");
+  const doc = dom.window.document;
+  doc.querySelector('[data-whiskey-empire-list]')?.removeAttribute('data-whiskey-empire-list');
+  const whiskey = doc.querySelector<HTMLElement>('[role="tab"]')!;
+  whiskey.setAttribute("aria-selected", "false");
+  const cocktail = whiskey.cloneNode(true) as HTMLElement;
+  cocktail.textContent = "Whiskey Empire Cocktail Menu";
+  cocktail.setAttribute("aria-selected", "true");
+  whiskey.before(cocktail);
+  whiskey.remove();
+  let cocktailClicks = 0;
+  cocktail.addEventListener("click", () => cocktailClicks++);
+  whiskey.addEventListener("click", () => whiskey.setAttribute("aria-selected", "true"));
+  setTimeout(() => cocktail.after(whiskey), 10);
+  assert.equal(await activateWhiskeyTab(doc, 300), true);
+  assert.equal(cocktailClicks, 0);
+  assert.equal(whiskey.getAttribute("aria-selected"), "true");
+});

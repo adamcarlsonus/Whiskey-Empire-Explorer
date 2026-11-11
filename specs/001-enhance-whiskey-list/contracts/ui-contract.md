@@ -39,6 +39,13 @@ Error/action mapping:
 | Failed middle page or safety limit | Rescan, Original Page, and Close |
 | Cancelled | Rescan, Original Page, and Close |
 
+When the Whiskey Empire menu cannot be found, explain that Untappd may block some VPN
+connections and suggest pausing the VPN or allowing the site outside it, reloading the page,
+and scanning once the original menu is visible. Failed pagination may show the same guidance
+alongside retained partial results. Do not claim to detect VPN use or identify it as the confirmed
+cause. Keep recovery in the existing panel; no blocking browser alert or extra permissions.
+The popup and README also describe this limitation.
+
 ## Accessibility invariants
 
 - All controls use native elements and accessible names.

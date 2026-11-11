@@ -15,7 +15,7 @@ function freshSession(): CollectionSession {
 function publicMessage(code: ScanErrorCode): string {
   const messages: Record<ScanErrorCode, string> = {
     WRONG_URL: "Open the supported Westside drink menu first.",
-    TAB_NOT_ACTIVE: "The Whiskey Empire collection could not be opened automatically.",
+    TAB_NOT_ACTIVE: "The Whiskey Empire menu could not be found. Untappd may block some VPN connections. If you use a VPN, try pausing it or allowing this site outside the VPN, then reload the restaurant page and scan again once the menu is visible. A network problem or menu change can also cause this; the extension cannot detect whether a VPN is active.",
     UNSUPPORTED_STRUCTURE: "This version of the whiskey list is not supported.",
     REQUEST_FAILED: "A whiskey-list page could not be requested.",
     PARSE_FAILED: "A whiskey-list page could not be read.",
