@@ -6,23 +6,25 @@ on:
   pull_request:
     branches: [ main, master ]
 
+permissions:
+  contents: read
+
 jobs:
   test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x]
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
         with:
-          node-version: ${{ matrix.node-version }}
+          version: 10
+          run_install: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
           cache: 'pnpm'
-      - name: Enable corepack and pnpm
-        run: corepack enable && corepack prepare pnpm@latest --activate
+          cache-dependency-path: pnpm-lock.yaml
       - name: Install dependencies
-        run: pnpm install
-      - name: Build TypeScript tests
-        run: pnpm run test:compile
-      - name: Run tests
-        run: pnpm test
+        run: pnpm install --frozen-lockfile
+      - name: Validate types, tests, and production build
+        run: pnpm run validate
