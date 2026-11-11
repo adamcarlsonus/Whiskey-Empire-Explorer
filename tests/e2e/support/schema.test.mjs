@@ -8,6 +8,13 @@ import { createReport } from "./report.mjs";
 const schema = JSON.parse(await readFile(resolve("specs/002-live-extension-e2e/contracts/diagnostic-report.schema.json"), "utf8"));
 const validate = new Ajv2020({ allErrors: true, strict: false, validateFormats: false }).compile(schema);
 
+function macReport(options) {
+  const report = createReport(options);
+  // These fixtures describe the macOS live runner, regardless of the test host OS.
+  report.platform = "darwin";
+  return report;
+}
+
 function identities(report) {
   report.browser = { provider: "playwright", browserName: "chromium", version: "149", headless: false, profileId: "profile-1" };
   report.extension = { id: "abcdefghijklmnopabcdefghijklmnop", name: "Whiskey Empire West", version: "0.1.0", manifestVersion: 3, permissions: ["activeTab", "scripting"], hostPermissions: [], buildDigest: "a".repeat(64) };
@@ -18,7 +25,7 @@ function cleanup(report, passed = true) {
 }
 
 test("successful report requires identities, positive panel evidence, no unexpected requests, and cleanup", () => {
-  const report = createReport({ runId: "pass" });
+  const report = macReport({ runId: "pass" });
   report.outcome = "passed";
   report.lastSuccessfulStage = "cleanup";
   identities(report);
@@ -32,7 +39,7 @@ test("successful report requires identities, positive panel evidence, no unexpec
 
 test("failed and blocked reports require a first failed stage", () => {
   for (const outcome of ["failed", "blocked"]) {
-    const report = createReport({ runId: outcome });
+    const report = macReport({ runId: outcome });
     report.outcome = outcome;
     report.firstFailedStage = "prerequisites";
     report.stages = [{ name: "prerequisites", status: outcome === "blocked" ? "blocked" : "failed", startedAt: report.startedAt, finishedAt: report.finishedAt, deadlineMs: 1_000, summary: outcome }];
@@ -44,7 +51,7 @@ test("failed and blocked reports require a first failed stage", () => {
 });
 
 test("malformed report fields are rejected", () => {
-  const report = createReport({ runId: "bad" });
+  const report = macReport({ runId: "bad" });
   report.outcome = "failed";
   report.firstFailedStage = "live-page";
   report.stages = [{ name: "not-a-stage", status: "failed", startedAt: null, finishedAt: null, deadlineMs: 1, summary: "bad" }];
